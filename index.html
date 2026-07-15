@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delhi NGO Directory</title>
+<style>
+  :root{
+    --paper:#F6F3EC;
+    --ink:#1F2A24;
+    --forest:#2C5F4A;
+    --forest-dark:#1D4235;
+    --clay:#B4602C;
+    --line:#D9D2C0;
+    --card:#FFFFFF;
+    --muted:#6B6F63;
+    --panel-w:420px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  /* ── header ── */
+  header{
+    padding:2.2rem 1.5rem 1.4rem;
+    border-bottom:2px solid var(--line);
+    background:var(--card);
+  }
+  header .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    font-size:0.72rem;
+    color:var(--clay);
+    font-weight:700;
+    margin-bottom:0.4rem;
+  }
+  header h1{
+    margin:0 0 0.3rem;
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:clamp(1.6rem,4vw,2.3rem);
+    font-weight:800;
+    color:var(--forest-dark);
+  }
+  header p{margin:0;color:var(--muted);font-size:0.95rem;}
+
+  /* ── controls ── */
+  .controls{
+    max-width:1100px;
+    margin:1.4rem auto 0;
+    padding:0 1.5rem;
+    display:grid;
+    grid-template-columns:1.5fr 1fr;
+    gap:0.8rem;
+  }
+  @media(max-width:720px){.controls{grid-template-columns:1fr;}}
+  .controls input,.controls select{
+    width:100%;
+    padding:0.65rem 0.8rem;
+    border:1.5px solid var(--line);
+    border-radius:6px;
+    font-size:0.95rem;
+    background:var(--card);
+    color:var(--ink);
+  }
+  .controls input:focus,.controls select:focus{outline:none;border-color:var(--forest);}
+
+  /* ── meta row ── */
+  .meta-row{
+    max-width:1100px;
+    margin:0.9rem auto 0;
+    padding:0 1.5rem;
+    color:var(--muted);
+    font-size:0.85rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  #clearBtn{
+    background:none;
+    border:1px solid var(--line);
+    border-radius:5px;
+    padding:0.3rem 0.7rem;
+    cursor:pointer;
+    color:var(--forest-dark);
+    font-size:0.8rem;
+  }
+  #clearBtn:hover{background:var(--line);}
+
+  /* ── grid ── */
+  main{
+    max-width:1100px;
+    margin:1.2rem auto 3rem;
+    padding:0 1.5rem;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:0.9rem;
+  }
+
+  /* ── card ── */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-left:4px solid var(--forest);
+    border-radius:6px;
+    padding:1rem 1.1rem;
+    cursor:pointer;
+    transition:box-shadow 0.15s, border-left-color 0.15s;
+  }
+  .card:hover{box-shadow:0 2px 10px rgba(0,0,0,0.09);border-left-color:var(--clay);}
+  .card.active{border-left-color:var(--clay);box-shadow:0 2px 12px rgba(0,0,0,0.12);}
+  .card h3{
+    margin:0 0 0.35rem;
+    font-size:1.05rem;
+    font-weight:800;
+    color:var(--forest-dark);
+    font-family:Georgia,'Times New Roman',serif;
+  }
+  .card .region-badge{
+    display:inline-block;
+    font-size:0.7rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--clay);
+    margin-bottom:0.5rem;
+  }
+  .validation-badge{
+    display:inline-block;
+    font-size:0.68rem;
+    font-weight:700;
+    padding:0.15rem 0.55rem;
+    border-radius:99px;
+    margin-left:0.5rem;
+    vertical-align:middle;
+  }
+  .badge-green{background:#E4F3E9;color:#1D6B3A;}
+  .badge-yellow{background:#FBF0D6;color:#8A6208;}
+  .badge-red{background:#FBE4E1;color:#A02E22;}
+  .badge-gray{background:#EBEAE4;color:#6B6F63;}
+  .badge-verified{background:#D0EBE8;color:#0F5E56;}
+  .card .row{font-size:0.85rem;color:var(--ink);margin:0.15rem 0;line-height:1.4;}
+  .card .row.muted{color:var(--muted);}
+  .card .tags{margin-top:0.6rem;display:flex;flex-wrap:wrap;gap:0.3rem;}
+  .tag-pill{background:#EDF2EC;color:var(--forest-dark);font-size:0.72rem;padding:0.15rem 0.5rem;border-radius:99px;}
+  .card a{color:var(--forest);text-decoration:none;}
+  .card a:hover{text-decoration:underline;}
+
+  #emptyState{text-align:center;padding:3rem 1rem;color:var(--muted);}
+  #emptyState .big{font-size:1.1rem;color:var(--forest-dark);margin-bottom:0.3rem;}
+
+  /* ── loading overlay ── */
+  #loadingOverlay{
+    position:fixed;inset:0;
+    background:var(--paper);
+    display:flex;align-items:center;justify-content:center;
+    z-index:999;
+    font-size:1rem;color:var(--muted);
+    flex-direction:column;gap:0.8rem;
+  }
+  #loadingOverlay .spinner{
+    width:32px;height:32px;
+    border:3px solid var(--line);
+    border-top-color:var(--forest);
+    border-radius:50%;
+    animation:spin 0.7s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ── detail panel ── */
+  #overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(30,42,36,0.3);
+    z-index:100;
+  }
+  #overlay.open{display:block;}
+
+  #detailPanel{
+    position:fixed;
+    top:0;right:0;bottom:0;
+    width:var(--panel-w);
+    max-width:100vw;
+    background:var(--card);
+    border-left:2px solid var(--line);
+    overflow-y:auto;
+    z-index:101;
+    transform:translateX(100%);
+    transition:transform 0.25s ease;
+    display:flex;
+    flex-direction:column;
+  }
+  #detailPanel.open{transform:translateX(0);}
+
+  .panel-header{
+    padding:1.2rem 1.4rem 1rem;
+    border-bottom:1px solid var(--line);
+    position:sticky;top:0;
+    background:var(--card);
+    z-index:1;
+    display:flex;align-items:flex-start;gap:0.8rem;
+  }
+  .panel-header h2{
+    margin:0;
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:1.1rem;
+    font-weight:800;
+    color:var(--forest-dark);
+    flex:1;
+    line-height:1.3;
+  }
+  #closePanel{
+    background:none;border:none;cursor:pointer;
+    color:var(--muted);font-size:1.4rem;line-height:1;
+    padding:0 0.2rem;
+    flex-shrink:0;
+  }
+  #closePanel:hover{color:var(--ink);}
+
+  .panel-body{padding:1.2rem 1.4rem;flex:1;}
+
+  .panel-section{margin-bottom:1.4rem;}
+  .panel-section-title{
+    font-size:0.68rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--clay);
+    margin-bottom:0.6rem;
+  }
+  .panel-row{
+    font-size:0.88rem;
+    color:var(--ink);
+    margin:0.25rem 0;
+    line-height:1.5;
+    display:flex;gap:0.5rem;
+  }
+  .panel-row .label{color:var(--muted);min-width:70px;flex-shrink:0;}
+  .panel-row a{color:var(--forest);text-decoration:none;}
+  .panel-row a:hover{text-decoration:underline;}
+
+  .panel-mission{
+    font-size:0.85rem;
+    color:var(--ink);
+    line-height:1.6;
+    background:var(--paper);
+    border-radius:6px;
+    padding:0.8rem 1rem;
+  }
+
+  /* search status inside panel */
+  #searchStatus{
+    margin:0 1.4rem 1rem;
+    padding:0.7rem 1rem;
+    border-radius:6px;
+    font-size:0.84rem;
+    display:none;
+  }
+  #searchStatus.searching{
+    display:block;
+    background:#EDF2EC;
+    color:var(--forest-dark);
+  }
+  #searchStatus.found{
+    display:block;
+    background:#E4F3E9;
+    color:#1D6B3A;
+  }
+  #searchStatus.not-found{
+    display:block;
+    background:#EBEAE4;
+    color:#6B6F63;
+  }
+  #searchStatus.error{
+    display:block;
+    background:#FBE4E1;
+    color:#A02E22;
+  }
+
+  /* fresh data section */
+  #freshSection{display:none;padding:0 1.4rem 1.4rem;}
+  #freshSection.visible{display:block;}
+  .fresh-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-left:4px solid var(--forest);
+    border-radius:6px;
+    padding:1rem;
+    margin-bottom:1rem;
+  }
+  .fresh-card-title{
+    font-size:0.75rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--forest);
+    margin-bottom:0.6rem;
+  }
+
+  /* confirm buttons */
+  .confirm-row{
+    display:flex;gap:0.7rem;
+    padding:0 1.4rem 1.4rem;
+  }
+  .btn-confirm{
+    flex:1;
+    padding:0.65rem;
+    border-radius:6px;
+    border:none;
+    cursor:pointer;
+    font-size:0.9rem;
+    font-weight:600;
+  }
+  .btn-yes{background:var(--forest);color:#fff;}
+  .btn-yes:hover{background:var(--forest-dark);}
+  .btn-no{background:var(--line);color:var(--ink);}
+  .btn-no:hover{background:#C8C0AD;}
+
+  /* success toast */
+  #toast{
+    position:fixed;
+    bottom:2rem;left:50%;
+    transform:translateX(-50%) translateY(80px);
+    background:var(--forest-dark);
+    color:#fff;
+    padding:0.7rem 1.4rem;
+    border-radius:8px;
+    font-size:0.9rem;
+    z-index:200;
+    transition:transform 0.3s ease, opacity 0.3s ease;
+    opacity:0;
+  }
+  #toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+  @media(max-width:480px){
+    #detailPanel{width:100vw;}
+  }
+</style>
+</head>
+<body>
+
+<!-- loading screen -->
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <span>Loading NGO directory…</span>
+</div>
+
+<header>
+  <div class="eyebrow">NGO Directory &middot; Delhi NCT</div>
+  <h1>Find an NGO</h1>
+  <p id="totalCount">Loading…</p>
+</header>
+
+<div class="controls">
+  <input type="text" id="searchInput" placeholder="Search by name or keyword…">
+  <select id="regionSelect"><option value="">All regions</option></select>
+</div>
+
+<div class="meta-row">
+  <span id="resultCount"></span>
+  <button id="clearBtn">Clear filters</button>
+</div>
+
+<main>
+  <div class="grid" id="results"></div>
+  <div id="emptyState" style="display:none;">
+    <div class="big">No matches</div>
+    <div>Try a different region, cause, or search term.</div>
+  </div>
+</main>
+
+<!-- overlay backdrop -->
+<div id="overlay"></div>
+
+<!-- detail panel -->
+<div id="detailPanel">
+  <div class="panel-header">
+    <h2 id="panelName"></h2>
+    <button id="closePanel" title="Close">&#x2715;</button>
+  </div>
+
+  <div class="panel-body">
+    <!-- existing sheet data -->
+    <div class="panel-section" id="sheetDataSection">
+      <div class="panel-section-title">Stored info</div>
+      <div id="panelAddress" class="panel-row" style="display:none">
+        <span class="label">Address</span><span id="panelAddressVal"></span>
+      </div>
+      <div id="panelPhone" class="panel-row" style="display:none">
+        <span class="label">Phone</span><span id="panelPhoneVal"></span>
+      </div>
+      <div id="panelMobile" class="panel-row" style="display:none">
+        <span class="label">Mobile</span><span id="panelMobileVal"></span>
+      </div>
+      <div id="panelEmail" class="panel-row" style="display:none">
+        <span class="label">Email</span><a id="panelEmailVal" href="#"></a>
+      </div>
+      <div id="panelWebsite" class="panel-row" style="display:none">
+        <span class="label">Website</span><a id="panelWebsiteVal" href="#" target="_blank" rel="noopener"></a>
+      </div>
+      <div id="panelContact" class="panel-row" style="display:none">
+        <span class="label">Contact</span><span id="panelContactVal"></span>
+      </div>
+    </div>
+
+    <div class="panel-section" id="missionSection" style="display:none">
+      <div class="panel-section-title">Mission</div>
+      <div class="panel-mission" id="panelMission"></div>
+    </div>
+
+    <div class="panel-section" id="verifiedBanner" style="display:none">
+      <span class="validation-badge badge-verified">&#10003; Verified on <span id="verifiedDate"></span></span>
+    </div>
+  </div>
+
+  <!-- search status bar -->
+  <div id="searchStatus"></div>
+
+  <!-- fresh data from web (shown after search) -->
+  <div id="freshSection">
+    <div class="fresh-card">
+      <div class="fresh-card-title">Found on the web</div>
+      <div id="freshRows"></div>
+    </div>
+    <p style="font-size:0.82rem;color:var(--muted);margin:0 0 0.8rem;">
+      Is this the correct organisation?
+    </p>
+  </div>
+
+  <!-- confirm buttons (shown with fresh data) -->
+  <div class="confirm-row" id="confirmRow" style="display:none">
+    <button class="btn-confirm btn-yes" id="btnYes">Yes, save this info</button>
+    <button class="btn-confirm btn-no" id="btnNo">No, wrong result</button>
+  </div>
+</div>
+
+<!-- toast -->
+<div id="toast"></div>
+
+<script>
+const REGIONS = ["Central Delhi","Delhi (unspecified)","East Delhi","New Delhi","North Delhi","North East Delhi","North West Delhi","South Delhi","South East Delhi","South West Delhi","Unknown","West Delhi"];
+
+const WORKER_URL = "YOUR_WORKER_URL_HERE";
+
+let DATA = [];
+let activeNgo = null;
+let freshData = null;
+
+const searchInput   = document.getElementById('searchInput');
+const regionSelect  = document.getElementById('regionSelect');
+const resultsEl     = document.getElementById('results');
+const resultCountEl = document.getElementById('resultCount');
+const emptyStateEl  = document.getElementById('emptyState');
+const clearBtn      = document.getElementById('clearBtn');
+const loadingOverlay= document.getElementById('loadingOverlay');
+const totalCountEl  = document.getElementById('totalCount');
+
+const overlay       = document.getElementById('overlay');
+const detailPanel   = document.getElementById('detailPanel');
+const closePanel    = document.getElementById('closePanel');
+const searchStatus  = document.getElementById('searchStatus');
+const freshSection  = document.getElementById('freshSection');
+const confirmRow    = document.getElementById('confirmRow');
+const btnYes        = document.getElementById('btnYes');
+const btnNo         = document.getElementById('btnNo');
+const toast         = document.getElementById('toast');
+
+REGIONS.forEach(r => {
+  const opt = document.createElement('option');
+  opt.value = r; opt.textContent = r;
+  regionSelect.appendChild(opt);
+});
+
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str || '';
+  return d.innerHTML;
+}
+
+async function loadData() {
+  try {
+    const res = await fetch('./data.json');
+    if (!res.ok) throw new Error('fetch failed');
+    DATA = await res.json();
+    loadingOverlay.style.display = 'none';
+    totalCountEl.textContent = DATA.length + ' organizations, searchable by cause and district.';
+    render();
+  } catch(e) {
+    loadingOverlay.innerHTML = '<div style="color:#A02E22;text-align:center;padding:2rem;">Could not load data.json<br><small>Make sure the file is in the same folder as this HTML</small></div>';
+  }
+}
+
+function render() {
+  const q = searchInput.value.trim().toLowerCase();
+  const region = regionSelect.value;
+
+  const filtered = DATA.filter(ngo => {
+    if (region && ngo.region !== region) return false;
+    if (q) {
+      const hay = (ngo.name + ' ' + ngo.address + ' ' + ngo.mission + ' ' + (ngo.tags||[]).join(' ')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  resultCountEl.textContent = filtered.length + ' result' + (filtered.length === 1 ? '' : 's');
+  resultsEl.innerHTML = '';
+
+  if (filtered.length === 0) {
+    emptyStateEl.style.display = 'block';
+    return;
+  }
+  emptyStateEl.style.display = 'none';
+
+  const frag = document.createDocumentFragment();
+  filtered.slice(0, 300).forEach(ngo => {
+    const card = document.createElement('div');
+    card.className = 'card' + (activeNgo && activeNgo.name === ngo.name ? ' active' : '');
+    const contactBits = [];
+    if (ngo.phone)  contactBits.push('<strong>Ph:</strong> ' + escapeHtml(ngo.phone));
+    if (ngo.mobile) contactBits.push('<strong>Mob:</strong> ' + escapeHtml(ngo.mobile));
+
+    let badgeLabel = escapeHtml(ngo.badge_label || '');
+    let badgeClass = ngo.badge_class || 'badge-gray';
+    if (ngo.verified) {
+      badgeLabel = 'Website verified';
+      badgeClass = 'badge-verified';
+    }
+
+    card.innerHTML = `
+      <span class="region-badge">${escapeHtml(ngo.region)}</span><span class="validation-badge ${badgeClass}">${badgeLabel}</span>
+      <h3>${escapeHtml(ngo.name)}</h3>
+      ${ngo.address ? `<div class="row muted">${escapeHtml(ngo.address)}</div>` : ''}
+      ${contactBits.length ? `<div class="row">${contactBits.join(' &middot; ')}</div>` : ''}
+      ${ngo.email   ? `<div class="row"><a href="mailto:${escapeHtml(ngo.email)}">${escapeHtml(ngo.email)}</a></div>` : ''}
+      ${ngo.website ? `<div class="row"><a href="${escapeHtml(ngo.website)}" target="_blank" rel="noopener">${escapeHtml(ngo.website)}</a></div>` : ''}
+      ${ngo.contact ? `<div class="row muted"><strong>Contact:</strong> ${escapeHtml(ngo.contact)}</div>` : ''}
+      ${ngo.mission ? `<div class="row"><strong>Mission:</strong> ${escapeHtml(ngo.mission.substring(0,120))}${ngo.mission.length>120?'…':''}</div>` : ''}
+      <div class="tags">${(ngo.tags||[]).map(t=>`<span class="tag-pill">${escapeHtml(t)}</span>`).join('')}</div>
+    `;
+    card.addEventListener('click', () => openPanel(ngo));
+    frag.appendChild(card);
+  });
+  resultsEl.appendChild(frag);
+
+  if (filtered.length > 300) {
+    const note = document.createElement('div');
+    note.className = 'row muted';
+    note.style.cssText = 'grid-column:1/-1;text-align:center;padding:1rem 0;';
+    note.textContent = `Showing first 300 of ${filtered.length} — narrow your search to see more.`;
+    resultsEl.appendChild(note);
+  }
+}
+
+function openPanel(ngo) {
+  activeNgo = ngo;
+  freshData = null;
+
+  document.getElementById('panelName').textContent = ngo.name;
+
+  function setRow(wrapId, valId, value, isLink, href) {
+    const wrap = document.getElementById(wrapId);
+    const val  = document.getElementById(valId);
+    if (value) {
+      wrap.style.display = 'flex';
+      if (isLink) { val.textContent = value; val.href = href || value; }
+      else val.textContent = value;
+    } else {
+      wrap.style.display = 'none';
+    }
+  }
+
+  setRow('panelAddress', 'panelAddressVal', ngo.address);
+  setRow('panelPhone',   'panelPhoneVal',   ngo.phone);
+  setRow('panelMobile',  'panelMobileVal',  ngo.mobile);
+  setRow('panelEmail',   'panelEmailVal',   ngo.email,   true, 'mailto:' + ngo.email);
+  setRow('panelWebsite', 'panelWebsiteVal', ngo.verified_website || ngo.website, true, ngo.verified_website || ngo.website);
+  setRow('panelContact', 'panelContactVal', ngo.contact);
+
+  const missionSec = document.getElementById('missionSection');
+  if (ngo.mission) {
+    missionSec.style.display = 'block';
+    document.getElementById('panelMission').textContent = ngo.mission;
+  } else {
+    missionSec.style.display = 'none';
+  }
+
+  const verBanner = document.getElementById('verifiedBanner');
+  if (ngo.verified && ngo.verified_date) {
+    verBanner.style.display = 'block';
+    document.getElementById('verifiedDate').textContent = ngo.verified_date;
+  } else {
+    verBanner.style.display = 'none';
+  }
+
+  searchStatus.className = '';
+  searchStatus.style.display = 'none';
+  freshSection.className = '';
+  confirmRow.style.display = 'none';
+
+  overlay.classList.add('open');
+  detailPanel.classList.add('open');
+
+  render();
+
+  if (ngo.verified) {
+    setStatus('found', 'Already verified — showing saved data above.');
+  } else {
+    startSearch(ngo);
+  }
+}
+
+function closeDetailPanel() {
+  overlay.classList.remove('open');
+  detailPanel.classList.remove('open');
+  activeNgo = null;
+  freshData = null;
+  render();
+}
+
+function setStatus(type, msg) {
+  searchStatus.className = type;
+  searchStatus.textContent = msg;
+  searchStatus.style.display = 'block';
+}
+
+async function startSearch(ngo) {
+  if (WORKER_URL === 'YOUR_WORKER_URL_HERE') {
+    setStatus('searching', 'Web search ready — connect the Worker in Step 3 to enable live search.');
+    return;
+  }
+  setStatus('searching', 'Searching the web for fresh info…');
+  try {
+    const res = await fetch(`${WORKER_URL}/enrich?name=${encodeURIComponent(ngo.name)}`);
+    const data = await res.json();
+    if (data.found) {
+      freshData = data;
+      showFreshData(data);
+      setStatus('found', 'Found on the web — please confirm below.');
+    } else {
+      setStatus('not-found', 'No matching result found on the web.');
+    }
+  } catch(e) {
+    setStatus('error', 'Search failed — check Worker URL or network.');
+  }
+}
+
+function showFreshData(data) {
+  const rows = [];
+  if (data.website)  rows.push(`<div class="panel-row"><span class="label">Website</span><a href="${escapeHtml(data.website)}" target="_blank" rel="noopener">${escapeHtml(data.website)}</a></div>`);
+  if (data.phone)    rows.push(`<div class="panel-row"><span class="label">Phone</span><span>${escapeHtml(data.phone)}</span></div>`);
+  if (data.email)    rows.push(`<div class="panel-row"><span class="label">Email</span><a href="mailto:${escapeHtml(data.email)}">${escapeHtml(data.email)}</a></div>`);
+  if (data.address)  rows.push(`<div class="panel-row"><span class="label">Address</span><span>${escapeHtml(data.address)}</span></div>`);
+  if ((data.socials||[]).length) {
+    data.socials.forEach(s => {
+      rows.push(`<div class="panel-row"><span class="label">Social</span><a href="${escapeHtml(s)}" target="_blank" rel="noopener">${escapeHtml(s)}</a></div>`);
+    });
+  }
+  if (rows.length === 0) rows.push('<div class="panel-row" style="color:var(--muted)">No new details found.</div>');
+
+  document.getElementById('freshRows').innerHTML = rows.join('');
+  freshSection.classList.add('visible');
+  confirmRow.style.display = 'flex';
+}
+
+btnYes.addEventListener('click', async () => {
+  if (!activeNgo || !freshData) return;
+  btnYes.textContent = 'Saving…';
+  btnYes.disabled = true;
+
+  const today = new Date().toISOString().split('T')[0];
+  const update = {
+    name: activeNgo.name,
+    verified: true,
+    verified_date: today,
+    verified_website: freshData.website || '',
+    verified_phone:   freshData.phone   || '',
+    verified_email:   freshData.email   || '',
+    verified_socials: freshData.socials || []
+  };
+
+  if (WORKER_URL === 'YOUR_WORKER_URL_HERE') {
+    showToast('Worker not connected yet — come back after Step 3!');
+    btnYes.textContent = 'Yes, save this info';
+    btnYes.disabled = false;
+    return;
+  }
+
+  try {
+    const res = await fetch(`${WORKER_URL}/confirm`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(update)
+    });
+    const result = await res.json();
+    if (result.ok) {
+      const idx = DATA.findIndex(n => n.name === activeNgo.name);
+      if (idx !== -1) Object.assign(DATA[idx], update);
+      activeNgo = DATA[idx];
+      confirmRow.style.display = 'none';
+      freshSection.className = '';
+      setStatus('found', 'Saved! This NGO is now marked as verified.');
+      document.getElementById('verifiedBanner').style.display = 'block';
+      document.getElementById('verifiedDate').textContent = today;
+      showToast('Verified info saved successfully.');
+      render();
+    } else {
+      showToast('Save failed: ' + (result.error || 'unknown error'));
+    }
+  } catch(e) {
+    showToast('Could not reach Worker. Try again.');
+  }
+  btnYes.textContent = 'Yes, save this info';
+  btnYes.disabled = false;
+});
+
+btnNo.addEventListener('click', () => {
+  freshSection.className = '';
+  confirmRow.style.display = 'none';
+  setStatus('not-found', 'Marked as wrong result. No changes saved.');
+});
+
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+overlay.addEventListener('click', closeDetailPanel);
+closePanel.addEventListener('click', closeDetailPanel);
+searchInput.addEventListener('input', render);
+regionSelect.addEventListener('change', render);
+clearBtn.addEventListener('click', () => {
+  searchInput.value = '';
+  regionSelect.value = '';
+  render();
+});
+
+loadData();
+</script>
+</body>
+</html>
