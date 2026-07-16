@@ -3813,12 +3813,12 @@
     "tags": [],
     "mission": "We are ASRA – Accrete Social Reviews Advancement, a non government development organization which is working on issues of rural poor and other social works.",
     "badge_label": "Website verified",
-    "badge_class": "badge-green",
-    "verified": false,
-    "verified_date": "",
-    "verified_website": "",
-    "verified_phone": "",
-    "verified_email": "",
+    "badge_class": "badge-verified",
+    "verified": true,
+    "verified_date": "2026-07-16",
+    "verified_website": "https://www.asra.org.in/",
+    "verified_phone": "011-49039396",
+    "verified_email": "asra_ngo@hotmail.com",
     "verified_socials": []
   },
   {
