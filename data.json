@@ -5598,14 +5598,20 @@
       "Human Rights"
     ],
     "mission": "Butterflies organises support service to help street children in terms of non-formal education, health care and recreation. It organises children for collective action, helps and protects them from exploitation and creates public awareness. It also runs social mobilization activities on issues of exploitation and child abuse.",
-    "badge_label": "No website listed",
-    "badge_class": "badge-gray",
-    "verified": false,
-    "verified_date": "",
-    "verified_website": "",
-    "verified_phone": "",
+    "badge_label": "Website verified",
+    "badge_class": "badge-verified",
+    "verified": true,
+    "verified_date": "2026-07-16",
+    "verified_website": "https://butterfliesngo.org/",
+    "verified_phone": "9111353910",
     "verified_email": "",
-    "verified_socials": []
+    "verified_socials": [
+      "https://www.linkedin.com/company/butterfliesngo",
+      "https://www.facebook.com/Butterfliesngo",
+      "https://twitter.com/butterfliesngo",
+      "https://www.youtube.com/channel/UCCmnkRhxTdwOsZlCpknxFJA",
+      "https://www.instagram.com/butterfliesngo/"
+    ]
   },
   {
     "name": "Byword Editorial Consultants, New Delhi",
