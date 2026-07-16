@@ -299,6 +299,7 @@ async function loadCollabs() {
     if (!data.collabs) throw new Error(data.error || "No data returned");
     ALL_COLLABS = data.collabs;
     $("headerSub").textContent = ALL_COLLABS.length + " collaboration records";
+    $("loadingRow").style.display = "none";
     updateStats();
     render();
   } catch(e) {
@@ -339,8 +340,10 @@ function render() {
   $("resultCount").textContent = filtered.length + " record" + (filtered.length===1?"":"s");
 
   const tbody = $("tableBody");
+  tbody.innerHTML = "";
+
   if (!filtered.length) {
-    tbody.innerHTML = `<tr><td colspan="10" class="empty-table"><div class="big">No records found</div><div>Try a different search or log a new collaboration.</div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" class="empty-table"><div class="big">No records yet</div><div>Click "+ Log Collaboration" to add your first record.</div></td></tr>`;
     return;
   }
 
