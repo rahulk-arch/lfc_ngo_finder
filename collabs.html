@@ -469,6 +469,7 @@ $("btnSubmitLog").addEventListener("click", async () => {
   
 
   const btn = $("btnSubmitLog"); btn.textContent="Saving…"; btn.disabled=true;
+  const timestamp_now = new Date().toISOString();
   const payload = {
     ngo_name, date, topic,
     message_sent:   $("fMsgSent").value.trim(),
@@ -477,6 +478,18 @@ $("btnSubmitLog").addEventListener("click", async () => {
     status:         $("fStatus").value,
     notes:          $("fNotes").value.trim(),
     logged_by:      $("fLoggedBy").value.trim(),
+    // Explicit ordered array matching exact sheet column order:
+    // NGO Name | Date | Topic | Msg Sent | Reply Received | Follow-up Sent | Status | Notes | Logged By | Timestamp
+    ordered_values: [
+      ngo_name, date, topic,
+      $("fMsgSent").value.trim(),
+      $("fReply").value.trim(),
+      $("fFollowup").value.trim(),
+      $("fStatus").value,
+      $("fNotes").value.trim(),
+      $("fLoggedBy").value.trim(),
+      timestamp_now
+    ]
   };
   try {
     const res = await fetch(`${WORKER_URL}/log-collab`, {
@@ -485,7 +498,11 @@ $("btnSubmitLog").addEventListener("click", async () => {
     const result = await res.json();
     if (result.ok) {
       closeLogModal();
-      const newRecord = { id: result.id, ...payload, timestamp: new Date().toISOString() };
+      // Clear filters so the new record is always visible (not filtered out)
+      $("searchInput").value = "";
+      $("statusFilter").value = "";
+      $("historyBanner").classList.remove("visible");
+      const newRecord = { id: result.id || ("local_"+Date.now()), ...payload, timestamp: new Date().toISOString() };
       ALL_COLLABS.unshift(newRecord);
       updateStats();
       render();
