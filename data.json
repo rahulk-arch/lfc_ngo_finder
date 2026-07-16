@@ -3019,7 +3019,10 @@
     "verified_website": "",
     "verified_phone": "",
     "verified_email": "",
-    "verified_socials": []
+    "verified_socials": [],
+    "excluded_urls": [
+      "https://www.peopleforanimalsindia.org/"
+    ]
   },
   {
     "name": "Anispriyon Punar Jagran IVA, Delhi",
