@@ -38629,14 +38629,20 @@
       "Promote Energy Conservation And Clean Environment"
     ],
     "mission": "We focus on four principal program areas energy and environment, natural resources management, climate change, outreach in each of these areas we plan, monitor and implement projects, emphasizing the development of local institutions, leadership and skills at all levels. Our internal support structure ensures that each activity is managed professionally, and we take pride in matching global resources to local requirements in an optimal and cost-effective manner.",
-    "badge_label": "Unverified - check first",
-    "badge_class": "badge-yellow",
-    "verified": false,
-    "verified_date": "",
-    "verified_website": "",
-    "verified_phone": "",
+    "badge_label": "Website verified",
+    "badge_class": "badge-verified",
+    "verified": true,
+    "verified_date": "2026-07-16",
+    "verified_website": "https://winrock.org/countries/india/",
+    "verified_phone": "7409643720",
     "verified_email": "",
-    "verified_socials": []
+    "verified_socials": [
+      "https://www.facebook.com/pages/Winrock-International/74096437206",
+      "https://twitter.com/WinrockIntl",
+      "https://www.linkedin.com/company/winrock-international",
+      "https://www.youtube.com/user/WinrockIntl",
+      "https://www.instagram.com/winrock_international/"
+    ]
   },
   {
     "name": "Winter of Life, New Delhi",
