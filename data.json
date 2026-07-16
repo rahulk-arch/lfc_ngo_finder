@@ -39592,5 +39592,32 @@
     "verified_phone": "",
     "verified_email": "",
     "verified_socials": []
+  },
+  {
+    "name": "scope for change",
+    "region": "West Delhi",
+    "address": "A-83 and A-86, DDA Colony, Chaukhandi, Tilak Nagar, New Delhi - 110018",
+    "phone": "+91-8595868952",
+    "mobile": "",
+    "email": "info@scopeforchange.org",
+    "website": "https://scopeforchange.org/",
+    "contact": "",
+    "mission": "— Our Mission\nTo develop a holistic approach towards empowering the under-privileged by pooling in like minded ideas & resources through concurring individuals.\n\n— Our Vision\nTo ensure complete sustainable development, not just for an individual but an all-inclusive improvement in the bio ecosystem life.",
+    "tags": [
+      "Education",
+      "Women Empowerment",
+      "Social Well Being"
+    ],
+    "badge_label": "Website verified",
+    "badge_class": "badge-verified",
+    "verified": true,
+    "verified_date": "2026-07-16",
+    "verified_website": "https://scopeforchange.org/",
+    "verified_phone": "+91-8595868952",
+    "verified_email": "info@scopeforchange.org",
+    "verified_socials": [
+      "https://www.instagram.com/scopeforchange/"
+    ],
+    "excluded_urls": []
   }
 ]
