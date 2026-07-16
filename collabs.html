@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collaborations — LFC NGO</title>
+<style>
+:root{
+  --paper:#F6F3EC;--ink:#1F2A24;--forest:#2C5F4A;--forest-dark:#1D4235;
+  --clay:#B4602C;--line:#D9D2C0;--card:#FFFFFF;--muted:#6B6F63;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Segoe UI',Helvetica,Arial,sans-serif;}
+
+header{padding:2rem 1.5rem 1.2rem;border-bottom:2px solid var(--line);background:var(--card);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+header .left .eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;color:var(--clay);font-weight:700;margin-bottom:.3rem;}
+header .left h1{margin:0;font-family:Georgia,serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:800;color:var(--forest-dark);}
+header .left p{margin:.3rem 0 0;color:var(--muted);font-size:.9rem;}
+.nav-link{font-size:.85rem;color:var(--forest);text-decoration:none;border:1px solid var(--line);border-radius:5px;padding:.35rem .8rem;}
+.nav-link:hover{background:var(--line);}
+
+.toolbar{max-width:1200px;margin:1.2rem auto 0;padding:0 1.5rem;display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;}
+.toolbar input,.toolbar select{padding:.6rem .8rem;border:1.5px solid var(--line);border-radius:6px;font-size:.9rem;background:var(--card);color:var(--ink);}
+.toolbar input{flex:1;min-width:180px;}
+.toolbar input:focus,.toolbar select:focus{outline:none;border-color:var(--forest);}
+
+.btn{padding:.55rem 1rem;border-radius:6px;border:none;cursor:pointer;font-size:.85rem;font-weight:600;transition:background .12s;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.btn-primary{background:var(--forest);color:#fff;}   .btn-primary:hover:not(:disabled){background:var(--forest-dark);}
+.btn-clay{background:var(--clay);color:#fff;}         .btn-clay:hover:not(:disabled){background:#943f1a;}
+.btn-secondary{background:var(--line);color:var(--ink);} .btn-secondary:hover:not(:disabled){background:#C8C0AD;}
+.btn-danger{background:#FBE4E1;color:#A02E22;}        .btn-danger:hover:not(:disabled){background:#f5cdc8;}
+.btn-sm{padding:.32rem .65rem;font-size:.78rem;}
+
+.meta-row{max-width:1200px;margin:.7rem auto 0;padding:0 1.5rem;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.84rem;}
+
+main{max-width:1200px;margin:1.2rem auto 4rem;padding:0 1.5rem;}
+
+/* ── stats bar ── */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.7rem;margin-bottom:1.4rem;}
+.stat-card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:.9rem 1rem;}
+.stat-card .val{font-size:1.6rem;font-weight:800;color:var(--forest-dark);font-family:Georgia,serif;}
+.stat-card .lbl{font-size:.75rem;color:var(--muted);margin-top:.15rem;}
+
+/* ── table ── */
+.table-wrap{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead{background:var(--forest-dark);color:#fff;}
+thead th{padding:.75rem 1rem;text-align:left;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--line);transition:background .1s;}
+tbody tr:hover{background:#faf9f5;}
+tbody tr:last-child{border-bottom:none;}
+td{padding:.75rem 1rem;vertical-align:top;line-height:1.4;}
+td.ngo-name{font-weight:700;color:var(--forest-dark);min-width:180px;}
+td.date-col{white-space:nowrap;color:var(--muted);font-size:.82rem;}
+td.topic-col{min-width:140px;}
+td.msg-col{min-width:160px;color:var(--muted);font-size:.82rem;max-width:200px;}
+td.msg-col.has-value{color:var(--ink);}
+td.notes-col{min-width:160px;font-size:.82rem;color:var(--muted);max-width:180px;}
+td.notes-col.has-value{color:var(--ink);}
+
+.status-pill{display:inline-block;padding:.18rem .6rem;border-radius:99px;font-size:.72rem;font-weight:700;}
+.status-ready{background:#D0EBE8;color:#0F5E56;}
+.status-pending{background:#FBF0D6;color:#8A6208;}
+.status-not{background:#FBE4E1;color:#A02E22;}
+.status-followup{background:#E8E4F8;color:#4A2D9E;}
+.status-replied{background:#E4F3E9;color:#1D6B3A;}
+
+.check-cell{font-size:1rem;text-align:center;}
+.check-yes{color:#1D6B3A;}
+.check-no{color:#C8C0AD;}
+
+.empty-table{text-align:center;padding:3rem 1rem;color:var(--muted);}
+.empty-table .big{font-size:1rem;color:var(--forest-dark);margin-bottom:.3rem;font-weight:700;}
+
+/* ── ngo history card (shown when filtering by NGO) ── */
+#historyBanner{display:none;background:var(--forest-dark);color:#fff;border-radius:8px;padding:1rem 1.2rem;margin-bottom:1rem;display:none;align-items:center;justify-content:space-between;gap:1rem;}
+#historyBanner.visible{display:flex;}
+#historyBanner .hb-name{font-family:Georgia,serif;font-size:1rem;font-weight:700;}
+#historyBanner .hb-sub{font-size:.82rem;opacity:.8;margin-top:.15rem;}
+
+/* ── log collab modal ── */
+#modalOverlay{display:none;position:fixed;inset:0;background:rgba(30,42,36,.45);z-index:200;align-items:center;justify-content:center;}
+#modalOverlay.open{display:flex;}
+#logModal{background:var(--card);border-radius:10px;width:560px;max-width:95vw;max-height:92vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.2);}
+.modal-header{padding:1.2rem 1.4rem 1rem;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:.8rem;position:sticky;top:0;background:var(--card);z-index:1;}
+.modal-header h3{margin:0;font-family:Georgia,serif;font-size:1.05rem;color:var(--forest-dark);flex:1;}
+#closeModal{background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.4rem;line-height:1;}
+.modal-body{padding:1.2rem 1.4rem 1.4rem;}
+.form-field{margin-bottom:.75rem;}
+.form-field label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:.22rem;font-weight:600;}
+.form-field label .req{color:var(--clay);}
+.form-field input,.form-field select,.form-field textarea{width:100%;padding:.5rem .75rem;border:1.5px solid var(--line);border-radius:5px;font-size:.88rem;background:var(--card);color:var(--ink);}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:none;border-color:var(--forest);}
+.form-field textarea{resize:vertical;min-height:70px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+@media(max-width:480px){.form-grid{grid-template-columns:1fr;}}
+.check-group{display:flex;flex-direction:column;gap:.45rem;}
+.check-group label{display:flex;align-items:center;gap:.5rem;font-size:.88rem;color:var(--ink);font-weight:400;cursor:pointer;}
+.check-group input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--forest);}
+.form-hint{font-size:.74rem;color:var(--muted);margin-top:.18rem;}
+
+/* ── delete confirm ── */
+#deleteOverlay{display:none;position:fixed;inset:0;background:rgba(30,42,36,.45);z-index:300;align-items:center;justify-content:center;}
+#deleteOverlay.open{display:flex;}
+#deleteModal{background:var(--card);border-radius:10px;width:380px;max-width:95vw;padding:1.6rem;box-shadow:0 8px 40px rgba(0,0,0,.2);text-align:center;}
+#deleteModal h4{margin:0 0 .5rem;font-family:Georgia,serif;color:var(--forest-dark);}
+#deleteModal p{margin:0 0 1.2rem;color:var(--muted);font-size:.88rem;}
+#deleteModal .btn-row{display:flex;gap:.6rem;justify-content:center;}
+
+/* ── toast ── */
+#toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--forest-dark);color:#fff;padding:.7rem 1.4rem;border-radius:8px;font-size:.9rem;z-index:400;transition:transform .3s,opacity .3s;opacity:0;pointer-events:none;}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+#loadingRow td{text-align:center;padding:2.5rem;color:var(--muted);}
+.spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--line);border-top-color:var(--forest);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.5rem;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="left">
+    <div class="eyebrow">Letters for Change &middot; LFC</div>
+    <h1>Collaboration Tracker</h1>
+    <p id="headerSub">Loading records…</p>
+  </div>
+  <a href="./index.html" class="nav-link">&#8592; Back to NGO Directory</a>
+</header>
+
+<div class="toolbar">
+  <input type="text" id="searchInput" placeholder="Search by NGO name or topic…">
+  <select id="statusFilter">
+    <option value="">All statuses</option>
+    <option value="Ready to Collaborate">Ready to Collaborate</option>
+    <option value="Pending">Pending</option>
+    <option value="Replied">Replied</option>
+    <option value="Follow-up Sent">Follow-up Sent</option>
+    <option value="Not Interested">Not Interested</option>
+  </select>
+  <button class="btn btn-clay" id="btnLog">+ Log Collaboration</button>
+  <button class="btn btn-secondary" id="btnDownload">⬇ Export CSV</button>
+</div>
+<div class="meta-row">
+  <span id="resultCount"></span>
+  <button class="btn btn-secondary btn-sm" id="clearBtn">Clear filters</button>
+</div>
+
+<main>
+  <!-- stats -->
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-card"><div class="val" id="statTotal">—</div><div class="lbl">Total collabs</div></div>
+    <div class="stat-card"><div class="val" id="statNgos">—</div><div class="lbl">Unique NGOs</div></div>
+    <div class="stat-card"><div class="val" id="statReady">—</div><div class="lbl">Ready to collab</div></div>
+    <div class="stat-card"><div class="val" id="statPending">—</div><div class="lbl">Pending</div></div>
+    <div class="stat-card"><div class="val" id="statRecent">—</div><div class="lbl">This month</div></div>
+  </div>
+
+  <!-- history banner (shown when filtering by NGO) -->
+  <div id="historyBanner">
+    <div><div class="hb-name" id="hbName"></div><div class="hb-sub" id="hbSub"></div></div>
+    <button class="btn btn-secondary btn-sm" id="hbClear">Show all</button>
+  </div>
+
+  <!-- table -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>NGO Name</th>
+          <th>Date</th>
+          <th>Topic / Theme</th>
+          <th>Msg Sent</th>
+          <th>Reply</th>
+          <th>Follow-up</th>
+          <th>Status</th>
+          <th>Notes</th>
+          <th>Logged by</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr id="loadingRow"><td colspan="10"><span class="spinner"></span>Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<!-- log collab modal -->
+<div id="modalOverlay">
+  <div id="logModal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Log a Collaboration</h3>
+      <button id="closeModal">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field">
+        <label>NGO Name <span class="req">*</span></label>
+        <input type="text" id="fNgo" placeholder="Start typing NGO name…" autocomplete="off">
+        <div id="ngoSuggestions" style="position:relative;"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Date <span class="req">*</span></label>
+          <input type="date" id="fDate">
+        </div>
+        <div class="form-field">
+          <label>Status</label>
+          <select id="fStatus">
+            <option value="Pending">Pending</option>
+            <option value="Replied">Replied</option>
+            <option value="Follow-up Sent">Follow-up Sent</option>
+            <option value="Ready to Collaborate">Ready to Collaborate</option>
+            <option value="Not Interested">Not Interested</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Topic / Theme <span class="req">*</span></label>
+        <input type="text" id="fTopic" placeholder="e.g. Children's literacy campaign, Health drive…">
+      </div>
+      <div class="form-field">
+        <label>Message sent</label>
+        <textarea id="fMsgSent" placeholder="Summary of what was sent…"></textarea>
+      </div>
+      <div class="form-field">
+        <label>Reply received</label>
+        <textarea id="fReply" placeholder="What did they reply…"></textarea>
+      </div>
+      <div class="form-field">
+        <label>Follow-up sent</label>
+        <textarea id="fFollowup" placeholder="Any follow-up messages…"></textarea>
+      </div>
+      <div class="form-field">
+        <label>Notes / Context</label>
+        <textarea id="fNotes" placeholder="Anything useful for next time — past themes, key contacts, preferences…"></textarea>
+      </div>
+      <div class="form-field">
+        <label>Logged by</label>
+        <input type="text" id="fLoggedBy" placeholder="Your name">
+      </div>
+      <div class="btn-row" style="display:flex;gap:.6rem;margin-top:.8rem;">
+        <button class="btn btn-primary" id="btnSubmitLog">Save record</button>
+        <button class="btn btn-secondary" id="btnCancelLog">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- delete confirm modal -->
+<div id="deleteOverlay">
+  <div id="deleteModal">
+    <h4>Delete this record?</h4>
+    <p>This will permanently remove this collaboration entry. This cannot be undone.</p>
+    <div class="btn-row">
+      <button class="btn btn-danger" id="btnConfirmDelete">Yes, delete</button>
+      <button class="btn btn-secondary" id="btnCancelDelete">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const WORKER_URL = "https://ngo-finder.meow89802.workers.dev";
+
+let ALL_COLLABS = [];
+let NGO_NAMES   = [];
+let pendingDeleteId = null;
+
+const $ = id => document.getElementById(id);
+
+// ── load NGO names for autocomplete ─────────────────────────────────────────
+async function loadNgoNames() {
+  try {
+    const res = await fetch("./data.json");
+    if (!res.ok) return;
+    const data = await res.json();
+    NGO_NAMES = data.map(n => n.name).filter(Boolean).sort();
+  } catch {}
+}
+
+// ── load collabs ─────────────────────────────────────────────────────────────
+async function loadCollabs() {
+  
+    $("loadingRow").innerHTML = '<td colspan="10" style="text-align:center;color:#8A6208;padding:2rem;">Paste your Worker URL into collabs.html to load data.</td>';
+    return;
+  }
+  try {
+    const res = await fetch(`${WORKER_URL}/get-collabs`);
+    const data = await res.json();
+    if (!data.collabs) throw new Error(data.error || "No data");
+    ALL_COLLABS = data.collabs;
+    updateStats();
+    render();
+  } catch(e) {
+    $("loadingRow").innerHTML = `<td colspan="10" style="text-align:center;color:#A02E22;padding:2rem;">Could not load records: ${e.message}</td>`;
+  }
+}
+
+// ── stats ─────────────────────────────────────────────────────────────────────
+function updateStats() {
+  const now = new Date();
+  const thisMonth = now.getFullYear() + "-" + String(now.getMonth()+1).padStart(2,"0");
+  $("statTotal").textContent  = ALL_COLLABS.length;
+  $("statNgos").textContent   = new Set(ALL_COLLABS.map(c=>c.ngo_name)).size;
+  $("statReady").textContent  = ALL_COLLABS.filter(c=>c.status==="Ready to Collaborate").length;
+  $("statPending").textContent= ALL_COLLABS.filter(c=>c.status==="Pending").length;
+  $("statRecent").textContent = ALL_COLLABS.filter(c=>(c.date||"").startsWith(thisMonth)).length;
+  $("headerSub").textContent  = ALL_COLLABS.length + " collaboration records";
+}
+
+// ── render table ──────────────────────────────────────────────────────────────
+function render() {
+  const q = $("searchInput").value.trim().toLowerCase();
+  const statusF = $("statusFilter").value;
+
+  let filtered = ALL_COLLABS.filter(c => {
+    if (statusF && c.status !== statusF) return false;
+    if (q) {
+      const hay = (c.ngo_name+" "+c.topic+" "+c.notes+" "+c.message_sent).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  $("resultCount").textContent = filtered.length + " record" + (filtered.length===1?"":"s");
+
+  const tbody = $("tableBody");
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="10" class="empty-table"><div class="big">No records found</div><div>Try a different search or log a new collaboration.</div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(c => `
+    <tr data-id="${esc(c.id)}">
+      <td class="ngo-name">
+        <a href="./index.html" style="color:var(--forest-dark);text-decoration:none;" onclick="filterByNgo(event,'${esc(c.ngo_name)}')">${esc(c.ngo_name)}</a>
+      </td>
+      <td class="date-col">${esc(c.date)}</td>
+      <td class="topic-col">${esc(c.topic)}</td>
+      <td class="msg-col ${c.message_sent?'has-value':''}">${c.message_sent ? truncate(c.message_sent,60) : '<span style="color:var(--line)">—</span>'}</td>
+      <td class="check-cell">${c.reply_received ? '<span class="check-yes" title="'+esc(c.reply_received)+'">✓</span>' : '<span class="check-no">—</span>'}</td>
+      <td class="check-cell">${c.followup_sent ? '<span class="check-yes" title="'+esc(c.followup_sent)+'">✓</span>' : '<span class="check-no">—</span>'}</td>
+      <td>${statusPill(c.status)}</td>
+      <td class="notes-col ${c.notes?'has-value':''}">${c.notes ? truncate(c.notes,70) : '<span style="color:var(--line)">—</span>'}</td>
+      <td style="font-size:.8rem;color:var(--muted);">${esc(c.logged_by)||"—"}</td>
+      <td>
+        <button class="btn btn-danger btn-sm" onclick="confirmDelete('${esc(c.id)}')">Delete</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function statusPill(s) {
+  const map = {
+    "Ready to Collaborate":"status-ready",
+    "Pending":"status-pending",
+    "Not Interested":"status-not",
+    "Follow-up Sent":"status-followup",
+    "Replied":"status-replied",
+  };
+  const cls = map[s] || "status-pending";
+  return `<span class="status-pill ${cls}">${esc(s||"Pending")}</span>`;
+}
+
+function truncate(str, n) { return str.length > n ? esc(str.substring(0,n))+"…" : esc(str); }
+function esc(str) { const d=document.createElement("div");d.textContent=str||"";return d.innerHTML; }
+
+// ── filter by NGO name (clicking NGO name in table) ──────────────────────────
+function filterByNgo(e, name) {
+  e.preventDefault();
+  $("searchInput").value = name;
+  render();
+  const banner = $("historyBanner");
+  banner.classList.add("visible");
+  $("hbName").textContent = name;
+  const count = ALL_COLLABS.filter(c=>c.ngo_name===name).length;
+  const last  = ALL_COLLABS.filter(c=>c.ngo_name===name).sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+  $("hbSub").textContent = `${count} collaboration${count===1?"":"s"} recorded${last?" · Last on "+last.date:""}`;
+}
+$("hbClear").addEventListener("click",()=>{
+  $("searchInput").value="";
+  $("historyBanner").classList.remove("visible");
+  render();
+});
+
+// ── log modal ─────────────────────────────────────────────────────────────────
+function openLogModal(prefillNgo="") {
+  $("fNgo").value   = prefillNgo;
+  $("fDate").value  = new Date().toISOString().split("T")[0];
+  $("fTopic").value = "";
+  $("fMsgSent").value = "";
+  $("fReply").value   = "";
+  $("fFollowup").value= "";
+  $("fNotes").value   = "";
+  $("fLoggedBy").value= "";
+  $("fStatus").value  = "Pending";
+  $("modalOverlay").classList.add("open");
+  $("fNgo").focus();
+}
+
+function closeLogModal() { $("modalOverlay").classList.remove("open"); }
+
+$("btnLog").addEventListener("click", ()=>openLogModal());
+$("closeModal").addEventListener("click", closeLogModal);
+$("btnCancelLog").addEventListener("click", closeLogModal);
+$("modalOverlay").addEventListener("click", e=>{ if(e.target===$("modalOverlay")) closeLogModal(); });
+
+// ── NGO autocomplete ──────────────────────────────────────────────────────────
+$("fNgo").addEventListener("input", function() {
+  const q = this.value.trim().toLowerCase();
+  const box = $("ngoSuggestions");
+  if (!q || q.length < 2) { box.innerHTML=""; return; }
+  const matches = NGO_NAMES.filter(n=>n.toLowerCase().includes(q)).slice(0,6);
+  if (!matches.length) { box.innerHTML=""; return; }
+  box.innerHTML = `<div style="position:absolute;left:0;right:0;top:2px;background:var(--card);border:1.5px solid var(--line);border-radius:6px;z-index:50;box-shadow:0 4px 12px rgba(0,0,0,.1);">
+    ${matches.map(m=>`<div onclick="selectNgo('${m.replace(/'/g,"\\'")}','${m.replace(/'/g,"\\'")}')}" style="padding:.55rem .8rem;cursor:pointer;font-size:.88rem;border-bottom:1px solid var(--line);" onmouseover="this.style.background='var(--paper)'" onmouseout="this.style.background=''">${esc(m)}</div>`).join("")}
+  </div>`;
+});
+
+function selectNgo(display, value) {
+  $("fNgo").value = value;
+  $("ngoSuggestions").innerHTML = "";
+}
+
+document.addEventListener("click", e=>{ if(e.target!==$("fNgo")) $("ngoSuggestions").innerHTML=""; });
+
+// ── submit log ────────────────────────────────────────────────────────────────
+$("btnSubmitLog").addEventListener("click", async () => {
+  const ngo_name = $("fNgo").value.trim();
+  const date     = $("fDate").value;
+  const topic    = $("fTopic").value.trim();
+  if (!ngo_name) { showToast("NGO name is required."); return; }
+  if (!date)     { showToast("Date is required."); return; }
+  if (!topic)    { showToast("Topic is required."); return; }
+  
+
+  const btn = $("btnSubmitLog"); btn.textContent="Saving…"; btn.disabled=true;
+  const payload = {
+    ngo_name, date, topic,
+    message_sent:   $("fMsgSent").value.trim(),
+    reply_received: $("fReply").value.trim(),
+    followup_sent:  $("fFollowup").value.trim(),
+    status:         $("fStatus").value,
+    notes:          $("fNotes").value.trim(),
+    logged_by:      $("fLoggedBy").value.trim(),
+  };
+  try {
+    const res = await fetch(`${WORKER_URL}/log-collab`, {
+      method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload)
+    });
+    const result = await res.json();
+    if (result.ok) {
+      closeLogModal();
+      const newRecord = { id: result.id, ...payload, timestamp: new Date().toISOString() };
+      ALL_COLLABS.unshift(newRecord);
+      updateStats();
+      render();
+      showToast("Collaboration logged successfully.");
+    } else showToast("Save failed: "+(result.error||"unknown"));
+  } catch { showToast("Could not reach Worker."); }
+  btn.textContent="Save record"; btn.disabled=false;
+});
+
+// ── delete ────────────────────────────────────────────────────────────────────
+function confirmDelete(id) {
+  pendingDeleteId = id;
+  $("deleteOverlay").classList.add("open");
+}
+
+$("btnCancelDelete").addEventListener("click", ()=>{ $("deleteOverlay").classList.remove("open"); pendingDeleteId=null; });
+$("deleteOverlay").addEventListener("click", e=>{ if(e.target===$("deleteOverlay")){ $("deleteOverlay").classList.remove("open"); pendingDeleteId=null; }});
+
+$("btnConfirmDelete").addEventListener("click", async () => {
+  if (!pendingDeleteId) return;
+  
+  const btn = $("btnConfirmDelete"); btn.textContent="Deleting…"; btn.disabled=true;
+  try {
+    const res = await fetch(`${WORKER_URL}/delete-collab`, {
+      method:"DELETE", headers:{"Content-Type":"application/json"}, body:JSON.stringify({id:pendingDeleteId})
+    });
+    const result = await res.json();
+    if (result.ok) {
+      ALL_COLLABS = ALL_COLLABS.filter(c=>c.id!==pendingDeleteId);
+      updateStats(); render();
+      $("deleteOverlay").classList.remove("open");
+      showToast("Record deleted.");
+    } else showToast("Delete failed: "+(result.error||"unknown"));
+  } catch { showToast("Could not reach Worker."); }
+  btn.textContent="Yes, delete"; btn.disabled=false;
+  pendingDeleteId=null;
+});
+
+// ── CSV export ────────────────────────────────────────────────────────────────
+$("btnDownload").addEventListener("click", ()=>{
+  const q = $("searchInput").value.trim().toLowerCase();
+  const statusF = $("statusFilter").value;
+  const filtered = ALL_COLLABS.filter(c=>{
+    if(statusF&&c.status!==statusF) return false;
+    if(q){const hay=(c.ngo_name+" "+c.topic+" "+c.notes).toLowerCase();if(!hay.includes(q))return false;}
+    return true;
+  });
+  const cols=["ngo_name","date","topic","message_sent","reply_received","followup_sent","status","notes","logged_by","timestamp"];
+  const labels=["NGO Name","Date","Topic","Message Sent","Reply Received","Follow-up Sent","Status","Notes","Logged By","Timestamp"];
+  const rows=[labels,...filtered.map(c=>cols.map(k=>'"'+(c[k]||"").replace(/"/g,'""')+'"'))];
+  const csv=rows.map(r=>r.join(",")).join("\n");
+  const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`LFC_Collaborations_${new Date().toISOString().split("T")[0]}.csv`;
+  a.click();
+  showToast(`Exported ${filtered.length} records.`);
+});
+
+// ── misc ──────────────────────────────────────────────────────────────────────
+function showToast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),3200);}
+
+$("searchInput").addEventListener("input", render);
+$("statusFilter").addEventListener("change", render);
+$("clearBtn").addEventListener("click",()=>{ $("searchInput").value=""; $("statusFilter").value=""; $("historyBanner").classList.remove("visible"); render(); });
+
+loadNgoNames();
+loadCollabs();
+
+// auto-open log modal if arriving from NGO panel
+const urlParams = new URLSearchParams(window.location.search);
+const prefillNgo = urlParams.get("ngo");
+if (prefillNgo) {
+  // wait for page to settle then open modal
+  setTimeout(()=>openLogModal(prefillNgo), 600);
+}
+</script>
+</body>
+</html>
