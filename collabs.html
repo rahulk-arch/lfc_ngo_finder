@@ -30,10 +30,8 @@ header p{margin:.25rem 0 0;color:var(--muted);font-size:.88rem;}
 
 .btn{padding:.48rem .85rem;border-radius:6px;border:none;cursor:pointer;font-size:.83rem;font-weight:600;transition:background .12s;}
 .btn:disabled{opacity:.5;cursor:not-allowed;}
-.btn-primary{background:var(--forest);color:#fff;} .btn-primary:hover:not(:disabled){background:var(--forest-dark);}
 .btn-clay{background:var(--clay);color:#fff;} .btn-clay:hover:not(:disabled){background:#943f1a;}
 .btn-secondary{background:var(--line);color:var(--ink);} .btn-secondary:hover:not(:disabled){background:#C8C0AD;}
-.btn-danger{background:#FBE4E1;color:#A02E22;} .btn-danger:hover:not(:disabled){background:#f5cdc8;}
 .btn-sm{padding:.28rem .55rem;font-size:.76rem;}
 
 main{max-width:1500px;margin:.9rem auto 3rem;padding:0 1rem;}
@@ -58,16 +56,16 @@ tbody tr:hover{background:#faf9f5;}
 tbody tr:last-child{border-bottom:none;}
 td{padding:.5rem .5rem;vertical-align:top;line-height:1.3;overflow:hidden;text-overflow:ellipsis;}
 
-th:nth-child(1),td:nth-child(1){width:16%;}
-th:nth-child(2),td:nth-child(2){width:7%;}
-th:nth-child(3),td:nth-child(3){width:11%;}
-th:nth-child(4),td:nth-child(4){width:13%;}
-th:nth-child(5),td:nth-child(5){width:12%;}
-th:nth-child(6),td:nth-child(6){width:12%;}
-th:nth-child(7),td:nth-child(7){width:10%;}
-th:nth-child(8),td:nth-child(8){width:11%;}
-th:nth-child(9),td:nth-child(9){width:9%;}
-th:nth-child(10),td:nth-child(10){width:6%;text-align:center;}
+/* 9 columns now — no delete column */
+th:nth-child(1),td:nth-child(1){width:18%;}
+th:nth-child(2),td:nth-child(2){width:8%;}
+th:nth-child(3),td:nth-child(3){width:12%;}
+th:nth-child(4),td:nth-child(4){width:17%;}
+th:nth-child(5),td:nth-child(5){width:6%;text-align:center;}
+th:nth-child(6),td:nth-child(6){width:6%;text-align:center;}
+th:nth-child(7),td:nth-child(7){width:11%;}
+th:nth-child(8),td:nth-child(8){width:14%;}
+th:nth-child(9),td:nth-child(9){width:8%;}
 
 td.ngo-name{font-weight:700;color:var(--forest-dark);}
 td.date-col{color:var(--muted);font-size:.75rem;}
@@ -111,24 +109,6 @@ td.notes-col.has-value{color:var(--ink);}
 @media(max-width:480px){.form-grid{grid-template-columns:1fr;}}
 .form-hint{font-size:.72rem;color:var(--muted);margin-top:.15rem;}
 
-/* ── autocomplete suggestions ── */
-.ngo-suggestion-item {
-  padding:.5rem .75rem;
-  cursor:pointer;
-  font-size:.86rem;
-  border-bottom:1px solid var(--line);
-  color:var(--ink);
-}
-.ngo-suggestion-item:hover { background:var(--paper); }
-.ngo-suggestion-item:last-child { border-bottom:none; }
-
-#deleteOverlay{display:none;position:fixed;inset:0;background:rgba(30,42,36,.45);z-index:300;align-items:center;justify-content:center;}
-#deleteOverlay.open{display:flex;}
-#deleteModal{background:var(--card);border-radius:10px;width:360px;max-width:95vw;padding:1.4rem;box-shadow:0 8px 40px rgba(0,0,0,.2);text-align:center;}
-#deleteModal h4{margin:0 0 .45rem;font-family:Georgia,serif;color:var(--forest-dark);}
-#deleteModal p{margin:0 0 1rem;color:var(--muted);font-size:.86rem;}
-#deleteModal .btn-row{display:flex;gap:.6rem;justify-content:center;}
-
 #toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--forest-dark);color:#fff;padding:.65rem 1.3rem;border-radius:8px;font-size:.88rem;z-index:400;transition:transform .3s,opacity .3s;opacity:0;pointer-events:none;}
 #toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 
@@ -147,6 +127,7 @@ td.notes-col.has-value{color:var(--ink);}
 <div class="nav-tabs">
   <a href="./index.html" class="nav-tab">🏠 NGO Directory</a>
   <a href="./collabs.html" class="nav-tab active">🤝 Collaboration Tracker</a>
+  <a href="./lfc.html" class="nav-tab">⭐ LFC Tags</a>
 </div>
 
 <div class="toolbar">
@@ -159,14 +140,12 @@ td.notes-col.has-value{color:var(--ink);}
     <option value="Follow-up Sent">Follow-up Sent</option>
     <option value="Not Interested">Not Interested</option>
   </select>
-  <select id="loggedByFilter"><option value="">All members</option></select>
-  <input type="date" id="dateFilter" title="Filter by date">
   <button class="btn btn-clay" id="btnLog">+ Log Collaboration</button>
   <button class="btn btn-secondary" id="btnDownload">⬇ Export CSV</button>
 </div>
 <div class="meta-row">
   <span id="resultCount"></span>
-  <button class="btn btn-secondary btn-sm" id="clearBtn">Clear all filters</button>
+  <button class="btn btn-secondary btn-sm" id="clearBtn">Clear filters</button>
 </div>
 
 <main>
@@ -191,16 +170,15 @@ td.notes-col.has-value{color:var(--ink);}
           <th>Date</th>
           <th>Topic / Theme</th>
           <th>Message Sent</th>
-          <th>Reply received</th>
-          <th>Follow-up sent</th>
+          <th>Reply</th>
+          <th>Follow-up</th>
           <th>Status</th>
           <th>Notes</th>
           <th>Logged by</th>
-          <th>Del</th>
         </tr>
       </thead>
       <tbody id="tableBody">
-        <tr id="loadingRow"><td colspan="10" style="text-align:center;padding:2.5rem;color:var(--muted);"><span class="spinner"></span>Loading collaboration records…</td></tr>
+        <tr id="loadingRow"><td colspan="9" style="text-align:center;padding:2.5rem;color:var(--muted);"><span class="spinner"></span>Loading collaboration records…</td></tr>
       </tbody>
     </table>
   </div>
@@ -253,28 +231,16 @@ td.notes-col.has-value{color:var(--ink);}
       </div>
       <div class="form-field">
         <label>Notes / Context</label>
-        <textarea id="fNotes" placeholder="Anything useful for next time — past themes, key contacts, preferences…"></textarea>
+        <textarea id="fNotes" placeholder="Anything useful for next time…"></textarea>
       </div>
       <div class="form-field">
         <label>Logged by</label>
         <input type="text" id="fLoggedBy" placeholder="Your name">
       </div>
       <div style="display:flex;gap:.6rem;margin-top:.8rem;">
-        <button class="btn btn-primary" id="btnSubmitLog">Save record</button>
+        <button class="btn btn-clay" id="btnSubmitLog">Save record</button>
         <button class="btn btn-secondary" id="btnCancelLog">Cancel</button>
       </div>
-    </div>
-  </div>
-</div>
-
-<!-- delete confirm -->
-<div id="deleteOverlay">
-  <div id="deleteModal">
-    <h4>Delete this record?</h4>
-    <p>This will permanently remove this entry. This cannot be undone.</p>
-    <div class="btn-row">
-      <button class="btn btn-danger" id="btnConfirmDelete">Yes, delete</button>
-      <button class="btn btn-secondary" id="btnCancelDelete">Cancel</button>
     </div>
   </div>
 </div>
@@ -286,7 +252,6 @@ const WORKER_URL = "https://ngo-finder.meow89802.workers.dev";
 
 let ALL_COLLABS = [];
 let NGO_NAMES   = [];
-let pendingDeleteId = null;
 const $ = id => document.getElementById(id);
 
 async function loadNgoNames() {
@@ -299,7 +264,7 @@ async function loadNgoNames() {
 }
 
 async function loadCollabs() {
-  $("loadingRow").innerHTML = '<td colspan="10" style="text-align:center;padding:2.5rem;color:var(--muted);"><span class="spinner"></span> Loading records… first load may take ~5 seconds</td>';
+  $("loadingRow").innerHTML = '<td colspan="9" style="text-align:center;padding:2.5rem;color:var(--muted);"><span class="spinner"></span> Loading records… first load may take ~5 seconds</td>';
   $("statTotal").textContent=$("statNgos").textContent=$("statReady").textContent=$("statPending").textContent=$("statRecent").textContent="…";
   try {
     const controller = new AbortController();
@@ -312,11 +277,10 @@ async function loadCollabs() {
     $("headerSub").textContent = ALL_COLLABS.length + " collaboration records";
     $("loadingRow").style.display = "none";
     updateStats();
-    populateLoggedByFilter();
     render();
   } catch(e) {
     const msg = e.name === "AbortError" ? "Request timed out — try Retry." : e.message;
-    $("loadingRow").innerHTML = `<td colspan="10" style="text-align:center;padding:2rem;">
+    $("loadingRow").innerHTML = `<td colspan="9" style="text-align:center;padding:2rem;">
       <div style="color:#A02E22;margin-bottom:.8rem;">Could not load: ${msg}</div>
       <button onclick="loadCollabs()" style="padding:.4rem .9rem;background:var(--forest);color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:.85rem;">↺ Retry</button>
     </td>`;
@@ -333,39 +297,19 @@ function updateStats() {
   $("statRecent").textContent = ALL_COLLABS.filter(c=>(c.date||"").startsWith(thisMonth)).length;
 }
 
-function populateLoggedByFilter() {
-  const names = [...new Set(ALL_COLLABS.map(c => (c.logged_by||"").trim()).filter(Boolean))].sort();
-  const sel = $("loggedByFilter");
-  // keep existing selection if still valid
-  const current = sel.value;
-  sel.innerHTML = '<option value="">All members</option>';
-  names.forEach(n => {
-    const o = document.createElement("option");
-    o.value = n; o.textContent = n;
-    if (n === current) o.selected = true;
-    sel.appendChild(o);
-  });
-}
-
 function render() {
-  const q        = $("searchInput").value.trim().toLowerCase();
-  const statusF  = $("statusFilter").value;
-  const loggedF  = $("loggedByFilter").value;
-  const dateF    = $("dateFilter").value;
+  const q = $("searchInput").value.trim().toLowerCase();
+  const statusF = $("statusFilter").value;
   let filtered = ALL_COLLABS.filter(c => {
     if (statusF && c.status !== statusF) return false;
-    if (loggedF && (c.logged_by||"").trim().toLowerCase() !== loggedF.toLowerCase()) return false;
-    if (dateF  && (c.date||"") !== dateF) return false;
     if (q) { const hay=(c.ngo_name+" "+c.topic+" "+c.notes+" "+c.message_sent).toLowerCase(); if(!hay.includes(q)) return false; }
     return true;
   });
-  // sort newest first by timestamp, fallback to date
-  filtered.sort((a, b) => new Date(b.timestamp || b.date || 0) - new Date(a.timestamp || a.date || 0));
   $("resultCount").textContent = filtered.length + " record" + (filtered.length===1?"":"s");
   const tbody = $("tableBody");
   tbody.innerHTML = "";
   if (!filtered.length) {
-    tbody.innerHTML = `<tr><td colspan="10" class="empty-table"><div class="big">No records yet</div><div>Click "+ Log Collaboration" to add your first record.</div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" class="empty-table"><div class="big">No records yet</div><div>Click "+ Log Collaboration" to add your first record.</div></td></tr>`;
     return;
   }
   tbody.innerHTML = filtered.map(c => `
@@ -374,12 +318,11 @@ function render() {
       <td class="date-col">${esc(c.date)}</td>
       <td>${esc(c.topic)}</td>
       <td class="msg-col ${c.message_sent?'has-value':''}">${c.message_sent?truncate(c.message_sent,55):'<span style="color:var(--line)">—</span>'}</td>
-      <td class="msg-col ${c.reply_received?'has-value':''}">${c.reply_received?truncate(c.reply_received,55):'<span style="color:var(--line)">—</span>'}</td>
-      <td class="msg-col ${c.followup_sent?'has-value':''}">${c.followup_sent?truncate(c.followup_sent,55):'<span style="color:var(--line)">—</span>'}</td>
+      <td class="check-cell">${c.reply_received?'<span class="check-yes" title="'+esc(c.reply_received)+'">✓</span>':'<span class="check-no">—</span>'}</td>
+      <td class="check-cell">${c.followup_sent?'<span class="check-yes" title="'+esc(c.followup_sent)+'">✓</span>':'<span class="check-no">—</span>'}</td>
       <td>${statusPill(c.status)}</td>
       <td class="notes-col ${c.notes?'has-value':''}">${c.notes?truncate(c.notes,60):'<span style="color:var(--line)">—</span>'}</td>
       <td style="font-size:.76rem;color:var(--muted);">${esc(c.logged_by)||"—"}</td>
-      <td style="text-align:center;"><button title="Delete record" onclick="confirmDelete('${esc(c.id)}')" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:#A02E22;padding:.1rem .3rem;">🗑</button></td>
     </tr>
   `).join("");
 }
@@ -408,58 +351,27 @@ function openLogModal(prefillNgo="") {
   $("fNgo").value=prefillNgo; $("fDate").value=new Date().toISOString().split("T")[0];
   $("fTopic").value=$("fMsgSent").value=$("fReply").value=$("fFollowup").value=$("fNotes").value=$("fLoggedBy").value="";
   $("fStatus").value="Pending";
-  $("ngoSuggestions").innerHTML="";
   $("modalOverlay").classList.add("open");
-  setTimeout(()=>$("fNgo").focus(), 50);
+  $("fNgo").focus();
 }
-function closeLogModal(){
-  $("modalOverlay").classList.remove("open");
-  $("ngoSuggestions").innerHTML="";
-}
+function closeLogModal(){ $("modalOverlay").classList.remove("open"); }
 $("btnLog").addEventListener("click",()=>openLogModal());
 $("closeModal").addEventListener("click",closeLogModal);
 $("btnCancelLog").addEventListener("click",closeLogModal);
 $("modalOverlay").addEventListener("click",e=>{ if(e.target===$("modalOverlay")) closeLogModal(); });
 
-// ── NGO autocomplete ──────────────────────────────────────────────────────────
 $("fNgo").addEventListener("input", function() {
-  const q = this.value.trim().toLowerCase();
-  const box = $("ngoSuggestions");
-  if (!q || q.length < 2) { box.innerHTML=""; return; }
-  const matches = NGO_NAMES.filter(n => n.toLowerCase().includes(q)).slice(0, 6);
-  if (!matches.length) { box.innerHTML=""; return; }
-
-  // Build suggestion items using DOM (not innerHTML) so onmousedown works reliably
-  const wrapper = document.createElement("div");
-  wrapper.style.cssText = "position:absolute;left:0;right:0;top:2px;background:var(--card);border:1.5px solid var(--line);border-radius:6px;z-index:50;box-shadow:0 4px 12px rgba(0,0,0,.1);";
-
-  matches.forEach(m => {
-    const item = document.createElement("div");
-    item.className = "ngo-suggestion-item";
-    item.textContent = m;
-    // ✅ KEY FIX: use mousedown + preventDefault so blur doesn't hide the
-    // dropdown before the click registers
-    item.addEventListener("mousedown", function(e) {
-      e.preventDefault(); // stops input losing focus (which would hide the list)
-      selectNgo(m);
-    });
-    wrapper.appendChild(item);
-  });
-
-  box.innerHTML = "";
-  box.appendChild(wrapper);
+  const q=this.value.trim().toLowerCase();
+  const box=$("ngoSuggestions");
+  if(!q||q.length<2){box.innerHTML="";return;}
+  const matches=NGO_NAMES.filter(n=>n.toLowerCase().includes(q)).slice(0,6);
+  if(!matches.length){box.innerHTML="";return;}
+  box.innerHTML=`<div style="position:absolute;left:0;right:0;top:2px;background:var(--card);border:1.5px solid var(--line);border-radius:6px;z-index:50;box-shadow:0 4px 12px rgba(0,0,0,.1);">
+    ${matches.map(m=>`<div onclick="selectNgo('${m.replace(/'/g,"\\'")}')" style="padding:.5rem .75rem;cursor:pointer;font-size:.86rem;border-bottom:1px solid var(--line);" onmouseover="this.style.background='var(--paper)'" onmouseout="this.style.background=''">${esc(m)}</div>`).join("")}
+  </div>`;
 });
-
-function selectNgo(v) {
-  $("fNgo").value = v;
-  $("ngoSuggestions").innerHTML = "";
-  $("fTopic").focus(); // move focus forward after selection
-}
-
-// hide suggestions when clicking anywhere else
-document.addEventListener("click", e => {
-  if (e.target !== $("fNgo")) $("ngoSuggestions").innerHTML = "";
-});
+function selectNgo(v){ $("fNgo").value=v; $("ngoSuggestions").innerHTML=""; }
+document.addEventListener("click",e=>{ if(e.target!==$("fNgo")) $("ngoSuggestions").innerHTML=""; });
 
 $("btnSubmitLog").addEventListener("click", async() => {
   const ngo_name=$("fNgo").value.trim(), date=$("fDate").value, topic=$("fTopic").value.trim();
@@ -484,34 +396,10 @@ $("btnSubmitLog").addEventListener("click", async() => {
   btn.textContent="Save record"; btn.disabled=false;
 });
 
-function confirmDelete(id){ pendingDeleteId=id; $("deleteOverlay").classList.add("open"); }
-$("btnCancelDelete").addEventListener("click",()=>{ $("deleteOverlay").classList.remove("open"); pendingDeleteId=null; });
-$("deleteOverlay").addEventListener("click",e=>{ if(e.target===$("deleteOverlay")){ $("deleteOverlay").classList.remove("open"); pendingDeleteId=null; }});
-$("btnConfirmDelete").addEventListener("click", async() => {
-  if(!pendingDeleteId) return;
-  const btn=$("btnConfirmDelete"); btn.textContent="Deleting…"; btn.disabled=true;
-  try {
-    const res=await fetch(`${WORKER_URL}/delete-collab`,{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:pendingDeleteId})});
-    const result=await res.json();
-    if(result.ok){
-      ALL_COLLABS=ALL_COLLABS.filter(c=>c.id!==pendingDeleteId);
-      updateStats(); render();
-      $("deleteOverlay").classList.remove("open");
-      showToast("Record deleted.");
-    } else showToast("Delete failed: "+(result.error||"unknown"));
-  } catch{ showToast("Could not reach Worker."); }
-  btn.textContent="Yes, delete"; btn.disabled=false;
-  pendingDeleteId=null;
-});
-
 $("btnDownload").addEventListener("click",()=>{
   const q=$("searchInput").value.trim().toLowerCase(), statusF=$("statusFilter").value;
-  const loggedF2 = $("loggedByFilter").value;
-  const dateF2   = $("dateFilter").value;
   const filtered=ALL_COLLABS.filter(c=>{
     if(statusF&&c.status!==statusF) return false;
-    if(loggedF2&&(c.logged_by||"").trim().toLowerCase()!==loggedF2.toLowerCase()) return false;
-    if(dateF2&&(c.date||"")!==dateF2) return false;
     if(q){const hay=(c.ngo_name+" "+c.topic+" "+c.notes).toLowerCase();if(!hay.includes(q))return false;}
     return true;
   });
@@ -528,13 +416,7 @@ $("btnDownload").addEventListener("click",()=>{
 function showToast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),3200);}
 $("searchInput").addEventListener("input",render);
 $("statusFilter").addEventListener("change",render);
-$("loggedByFilter").addEventListener("change",render);
-$("dateFilter").addEventListener("change",render);
-$("clearBtn").addEventListener("click",()=>{
-  $("searchInput").value=""; $("statusFilter").value="";
-  $("loggedByFilter").value=""; $("dateFilter").value="";
-  $("historyBanner").classList.remove("visible"); render();
-});
+$("clearBtn").addEventListener("click",()=>{ $("searchInput").value=""; $("statusFilter").value=""; $("historyBanner").classList.remove("visible"); render(); });
 
 loadNgoNames();
 loadCollabs();
