@@ -447,7 +447,7 @@ function render(){
     return true;
   });
 
-  // sort: LFC related → verified → website wrong → unreachable → no website → rest → defunct
+  // sort: LFC related → verified → unreachable → unverified/check first → website wrong → rest → defunct
   function sortKey(n){
     if(n.defunct) return 7;
     if(n.lfc_related) return 0;
@@ -455,9 +455,9 @@ function render(){
     const bc=n.badge_class||"";
     const bl=(n.badge_label||"").toLowerCase();
     const ms=(n.match_status||"").toLowerCase();
-    if(bc==="badge-green"||ms==="likely_match") return 2;
-    if(bc==="badge-red"||bl.includes("wrong")||ms==="likely_mismatch"||bc==="badge-yellow") return 3;
-    if(bl.includes("unreachable")||ms==="unreachable") return 4;
+    if(bl.includes("unreachable")||ms==="unreachable") return 2;
+    if(bc==="badge-green"||ms==="likely_match") return 3;
+    if(bc==="badge-red"||bl.includes("wrong")||ms==="likely_mismatch"||bc==="badge-yellow") return 4;
     if(bl.includes("no website")||ms==="no_website") return 5;
     return 6;
   }
