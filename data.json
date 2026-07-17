@@ -5154,7 +5154,9 @@
     "defunct": false,
     "defunct_reason": "",
     "defunct_date": "",
-    "excluded_urls": [],
+    "excluded_urls": [
+      "https://in.linkedin.com/in/j-b-oli-56a62254"
+    ],
     "verified_date": "2026-07-17",
     "verified_website": "https://butterfliesngo.org/",
     "verified_phones": [
