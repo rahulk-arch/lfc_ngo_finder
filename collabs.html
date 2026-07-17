@@ -159,12 +159,14 @@ td.notes-col.has-value{color:var(--ink);}
     <option value="Follow-up Sent">Follow-up Sent</option>
     <option value="Not Interested">Not Interested</option>
   </select>
+  <select id="loggedByFilter"><option value="">All members</option></select>
+  <input type="date" id="dateFilter" title="Filter by date">
   <button class="btn btn-clay" id="btnLog">+ Log Collaboration</button>
   <button class="btn btn-secondary" id="btnDownload">⬇ Export CSV</button>
 </div>
 <div class="meta-row">
   <span id="resultCount"></span>
-  <button class="btn btn-secondary btn-sm" id="clearBtn">Clear filters</button>
+  <button class="btn btn-secondary btn-sm" id="clearBtn">Clear all filters</button>
 </div>
 
 <main>
@@ -310,6 +312,7 @@ async function loadCollabs() {
     $("headerSub").textContent = ALL_COLLABS.length + " collaboration records";
     $("loadingRow").style.display = "none";
     updateStats();
+    populateLoggedByFilter();
     render();
   } catch(e) {
     const msg = e.name === "AbortError" ? "Request timed out — try Retry." : e.message;
@@ -330,14 +333,34 @@ function updateStats() {
   $("statRecent").textContent = ALL_COLLABS.filter(c=>(c.date||"").startsWith(thisMonth)).length;
 }
 
+function populateLoggedByFilter() {
+  const names = [...new Set(ALL_COLLABS.map(c => (c.logged_by||"").trim()).filter(Boolean))].sort();
+  const sel = $("loggedByFilter");
+  // keep existing selection if still valid
+  const current = sel.value;
+  sel.innerHTML = '<option value="">All members</option>';
+  names.forEach(n => {
+    const o = document.createElement("option");
+    o.value = n; o.textContent = n;
+    if (n === current) o.selected = true;
+    sel.appendChild(o);
+  });
+}
+
 function render() {
-  const q = $("searchInput").value.trim().toLowerCase();
-  const statusF = $("statusFilter").value;
+  const q        = $("searchInput").value.trim().toLowerCase();
+  const statusF  = $("statusFilter").value;
+  const loggedF  = $("loggedByFilter").value;
+  const dateF    = $("dateFilter").value;
   let filtered = ALL_COLLABS.filter(c => {
     if (statusF && c.status !== statusF) return false;
+    if (loggedF && (c.logged_by||"").trim().toLowerCase() !== loggedF.toLowerCase()) return false;
+    if (dateF  && (c.date||"") !== dateF) return false;
     if (q) { const hay=(c.ngo_name+" "+c.topic+" "+c.notes+" "+c.message_sent).toLowerCase(); if(!hay.includes(q)) return false; }
     return true;
   });
+  // sort newest first by timestamp, fallback to date
+  filtered.sort((a, b) => new Date(b.timestamp || b.date || 0) - new Date(a.timestamp || a.date || 0));
   $("resultCount").textContent = filtered.length + " record" + (filtered.length===1?"":"s");
   const tbody = $("tableBody");
   tbody.innerHTML = "";
@@ -483,8 +506,12 @@ $("btnConfirmDelete").addEventListener("click", async() => {
 
 $("btnDownload").addEventListener("click",()=>{
   const q=$("searchInput").value.trim().toLowerCase(), statusF=$("statusFilter").value;
+  const loggedF2 = $("loggedByFilter").value;
+  const dateF2   = $("dateFilter").value;
   const filtered=ALL_COLLABS.filter(c=>{
     if(statusF&&c.status!==statusF) return false;
+    if(loggedF2&&(c.logged_by||"").trim().toLowerCase()!==loggedF2.toLowerCase()) return false;
+    if(dateF2&&(c.date||"")!==dateF2) return false;
     if(q){const hay=(c.ngo_name+" "+c.topic+" "+c.notes).toLowerCase();if(!hay.includes(q))return false;}
     return true;
   });
@@ -501,7 +528,13 @@ $("btnDownload").addEventListener("click",()=>{
 function showToast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),3200);}
 $("searchInput").addEventListener("input",render);
 $("statusFilter").addEventListener("change",render);
-$("clearBtn").addEventListener("click",()=>{ $("searchInput").value=""; $("statusFilter").value=""; $("historyBanner").classList.remove("visible"); render(); });
+$("loggedByFilter").addEventListener("change",render);
+$("dateFilter").addEventListener("change",render);
+$("clearBtn").addEventListener("click",()=>{
+  $("searchInput").value=""; $("statusFilter").value="";
+  $("loggedByFilter").value=""; $("dateFilter").value="";
+  $("historyBanner").classList.remove("visible"); render();
+});
 
 loadNgoNames();
 loadCollabs();
