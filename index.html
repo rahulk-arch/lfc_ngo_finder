@@ -447,19 +447,20 @@ function render(){
     return true;
   });
 
-  // sort: LFC related → verified → unreachable → unverified/check first → website wrong → rest → defunct
+  // sort: LFC related → verified → unreachable → check first(unverified) → website wrong → no website → rest → defunct
   function sortKey(n){
-    if(n.defunct) return 7;
+    if(n.defunct) return 8;
     if(n.lfc_related) return 0;
     if(n.verified) return 1;
     const bc=n.badge_class||"";
     const bl=(n.badge_label||"").toLowerCase();
     const ms=(n.match_status||"").toLowerCase();
-    if(bl.includes("unreachable")||ms==="unreachable") return 2;
-    if(bc==="badge-green"||ms==="likely_match") return 3;
-    if(bc==="badge-red"||bl.includes("wrong")||ms==="likely_mismatch"||bc==="badge-yellow") return 4;
-    if(bl.includes("no website")||ms==="no_website") return 5;
-    return 6;
+    if(bl.includes("unreachable")||ms==="unreachable") return 3;
+    if(bc==="badge-green"||ms==="likely_match") return 2;
+    if(bc==="badge-yellow"||ms==="likely_mismatch") return 4;
+    if(bc==="badge-red"||bl.includes("wrong")) return 5;
+    if(bl.includes("no website")||ms==="no_website") return 6;
+    return 7;
   }
   filtered.sort((a,b)=>sortKey(a)-sortKey(b));
 
