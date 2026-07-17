@@ -1911,8 +1911,8 @@
       "Try To Aware People To This Disease"
     ],
     "mission": "To aware people, blood donation camps, keeping eye on ayurvedic treatment.",
-    "badge_label": "Website unreachable",
-    "badge_class": "badge-gray",
+    "badge_label": "No longer active",
+    "badge_class": "badge-defunct",
     "verified": false,
     "verified_date": "",
     "verified_website": "",
@@ -1927,9 +1927,9 @@
     "lfc_comment": "",
     "lfc_marked_by": "",
     "lfc_marked_at": "",
-    "defunct": false,
-    "defunct_reason": "",
-    "defunct_date": "",
+    "defunct": true,
+    "defunct_reason": "not for use",
+    "defunct_date": "2026-07-17",
     "excluded_urls": []
   },
   {
