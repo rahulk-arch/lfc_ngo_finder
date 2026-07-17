@@ -394,13 +394,45 @@ REGIONS.forEach(r=>{const o=document.createElement("option");o.value=r;o.textCon
 // ── load data ─────────────────────────────────────────────────────────────────
 async function loadData(){
   try{
-    const res=await fetch("./data (1).json");
-    if(!res.ok) throw new Error();
-    DATA=await res.json();
+    // fetch both files in parallel
+    const [ngoRes, missionRes] = await Promise.all([
+      fetch("./data.json"),
+      fetch("./missions.json")
+    ]);
+    if(!ngoRes.ok) throw new Error("Could not load data.json");
+    DATA = await ngoRes.json();
+
+    // merge missions into NGO records by ngo_name
+    if(missionRes.ok){
+      const missions = await missionRes.json();
+      const missionMap = {};
+      missions.forEach(m => { missionMap[m.ngo_name] = m.mission; });
+      DATA.forEach(ngo => { ngo.mission = missionMap[ngo.name] || ""; });
+    }
+
+    // also load lfc_meta.json and merge lfc_ fields into NGO records
+    try{
+      const lfcRes = await fetch("./lfc_meta.json");
+      if(lfcRes.ok){
+        const lfcRaw = await lfcRes.json();
+        // lfc_meta.json stores { records: [...] }
+        const lfcRecords = lfcRaw.records || lfcRaw;
+        const lfcMap = {};
+        lfcRecords.forEach(r => { lfcMap[r.ngo_name] = r; });
+        DATA.forEach(ngo => {
+          const lfc = lfcMap[ngo.name];
+          ngo.lfc_related   = lfc ? lfc.lfc_related   : false;
+          ngo.lfc_comment   = lfc ? lfc.lfc_comment   : "";
+          ngo.lfc_marked_by = lfc ? lfc.lfc_marked_by : "";
+          ngo.lfc_marked_at = lfc ? lfc.lfc_marked_at : "";
+        });
+      }
+    }catch(lfcErr){ /* lfc_meta optional - silently skip */ }
+
     $("loadingOverlay").style.display="none";
     $("totalCount").textContent=DATA.length+" organizations, searchable by cause and district.";
     render();
-  }catch{$("loadingOverlay").innerHTML='<div style="color:#A02E22;text-align:center;padding:2rem;">Could not load data.json</div>';}
+  }catch(e){$("loadingOverlay").innerHTML='<div style="color:#A02E22;text-align:center;padding:2rem;">Could not load data.json</div>';}
 }
 
 function esc(str){const d=document.createElement("div");d.textContent=str||"";return d.innerHTML;}
