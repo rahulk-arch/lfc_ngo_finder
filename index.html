@@ -549,9 +549,9 @@ function resetPanel(){
   $("searchStatus").style.display="none";
   $("freshSection").className="";
   $("confirmRow").style.display="none";
+  $("defunctBox").style.display="none";
   hideAllSubSections();
-  // reset action button highlights
-  ["aBtnSearch","aBtnManual","aBtnUrl","aBtnReset"].forEach(id=>$(id).classList.remove("active-btn"));
+  ["aBtnSearch","aBtnManual","aBtnUrl","aBtnReset","aBtnDefunct"].forEach(id=>$(id).classList.remove("active-btn"));
 }
 
 function closePanel(){
@@ -598,9 +598,15 @@ $("aBtnCollab").addEventListener("click",()=>{
 });
 
 $("aBtnDefunct").addEventListener("click",()=>{
-  $("defunctBox").style.display="block";
-  $("defunctReason").value="";
-  $("aBtnDefunct").classList.add("active-btn");
+  const box=$("defunctBox");
+  if(box.style.display==="block"){
+    box.style.display="none";
+    $("aBtnDefunct").classList.remove("active-btn");
+  } else {
+    box.style.display="block";
+    $("defunctReason").value="";
+    $("aBtnDefunct").classList.add("active-btn");
+  }
 });
 
 $("btnDefunctCancel").addEventListener("click",()=>{
