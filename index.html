@@ -394,7 +394,7 @@ REGIONS.forEach(r=>{const o=document.createElement("option");o.value=r;o.textCon
 // ── load data ─────────────────────────────────────────────────────────────────
 async function loadData(){
   try{
-    const res=await fetch("./data.json");
+    const res=await fetch("./data (1).json");
     if(!res.ok) throw new Error();
     DATA=await res.json();
     $("loadingOverlay").style.display="none";
