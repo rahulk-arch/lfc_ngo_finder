@@ -447,7 +447,7 @@ $("fNgo").addEventListener("input", function() {
   const matches = NGO_NAMES.filter(n=>n.toLowerCase().includes(q)).slice(0,6);
   if (!matches.length) { box.innerHTML=""; return; }
   box.innerHTML = `<div style="position:absolute;left:0;right:0;top:2px;background:var(--card);border:1.5px solid var(--line);border-radius:6px;z-index:50;box-shadow:0 4px 12px rgba(0,0,0,.1);">
-    ${matches.map(m=>`<div onclick="selectNgo('${m.replace(/'/g,"\\'")}','${m.replace(/'/g,"\\'")}')}" style="padding:.55rem .8rem;cursor:pointer;font-size:.88rem;border-bottom:1px solid var(--line);" onmouseover="this.style.background='var(--paper)'" onmouseout="this.style.background=''">${esc(m)}</div>`).join("")}
+    ${matches.map(m=>`<div onmousedown="event.preventDefault();selectNgo('${m.replace(/'/g,"\\'")}','${m.replace(/'/g,"\\'")}')}" style="padding:.55rem .8rem;cursor:pointer;font-size:.88rem;border-bottom:1px solid var(--line);" onmouseover="this.style.background='var(--paper)'" onmouseout="this.style.background=''">${esc(m)}</div>`).join("")}
   </div>`;
 });
 
