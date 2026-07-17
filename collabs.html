@@ -233,7 +233,7 @@ td.notes-col.has-value{color:var(--ink);}
         <textarea id="fNotes" placeholder="Anything useful for next time…"></textarea>
       </div>
       <div class="form-field">
-        <label>Logged by <span class="req">*</span></label>
+        <label>Logged by</label>
         <input type="text" id="fLoggedBy" placeholder="Your name">
       </div>
       <div style="display:flex;gap:.6rem;margin-top:.8rem;">
@@ -304,6 +304,10 @@ function render() {
     if (q) { const hay=(c.ngo_name+" "+c.topic+" "+c.notes+" "+c.message_sent).toLowerCase(); if(!hay.includes(q)) return false; }
     return true;
   });
+  // newest first — sorted here on the frontend so display order is guaranteed
+  // no matter what order the data arrives in from the server
+  filtered = filtered.slice().sort((a,b) => new Date(b.timestamp||b.date||0) - new Date(a.timestamp||a.date||0));
+
   $("resultCount").textContent = filtered.length + " record" + (filtered.length===1?"":"s");
   const tbody = $("tableBody");
   tbody.innerHTML = "";
@@ -376,7 +380,7 @@ $("btnSubmitLog").addEventListener("click", async() => {
   const ngo_name=$("fNgo").value.trim(), date=$("fDate").value, topic=$("fTopic").value.trim();
   if(!ngo_name){showToast("NGO name is required.");return;}
   if(!date){showToast("Date is required.");return;}
-  if(!$("fLoggedBy").value.trim()){showToast("Please enter your name.");return;}
+  if(!topic){showToast("Topic is required.");return;}
   const btn=$("btnSubmitLog"); btn.textContent="Saving…"; btn.disabled=true;
   const payload={ngo_name,date,topic,
     message_sent:$("fMsgSent").value.trim(),reply_received:$("fReply").value.trim(),
