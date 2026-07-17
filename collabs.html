@@ -61,11 +61,11 @@ td{padding:.5rem .5rem;vertical-align:top;line-height:1.3;overflow:hidden;text-o
 th:nth-child(1),td:nth-child(1){width:16%;}
 th:nth-child(2),td:nth-child(2){width:7%;}
 th:nth-child(3),td:nth-child(3){width:11%;}
-th:nth-child(4),td:nth-child(4){width:15%;}
-th:nth-child(5),td:nth-child(5){width:5%;text-align:center;}
-th:nth-child(6),td:nth-child(6){width:6%;text-align:center;}
+th:nth-child(4),td:nth-child(4){width:13%;}
+th:nth-child(5),td:nth-child(5){width:12%;}
+th:nth-child(6),td:nth-child(6){width:12%;}
 th:nth-child(7),td:nth-child(7){width:10%;}
-th:nth-child(8),td:nth-child(8){width:15%;}
+th:nth-child(8),td:nth-child(8){width:11%;}
 th:nth-child(9),td:nth-child(9){width:9%;}
 th:nth-child(10),td:nth-child(10){width:6%;text-align:center;}
 
@@ -189,8 +189,8 @@ td.notes-col.has-value{color:var(--ink);}
           <th>Date</th>
           <th>Topic / Theme</th>
           <th>Message Sent</th>
-          <th>Reply</th>
-          <th>Follow-up</th>
+          <th>Reply received</th>
+          <th>Follow-up sent</th>
           <th>Status</th>
           <th>Notes</th>
           <th>Logged by</th>
@@ -351,8 +351,8 @@ function render() {
       <td class="date-col">${esc(c.date)}</td>
       <td>${esc(c.topic)}</td>
       <td class="msg-col ${c.message_sent?'has-value':''}">${c.message_sent?truncate(c.message_sent,55):'<span style="color:var(--line)">—</span>'}</td>
-      <td class="check-cell">${c.reply_received?'<span class="check-yes" title="'+esc(c.reply_received)+'">✓</span>':'<span class="check-no">—</span>'}</td>
-      <td class="check-cell">${c.followup_sent?'<span class="check-yes" title="'+esc(c.followup_sent)+'">✓</span>':'<span class="check-no">—</span>'}</td>
+      <td class="msg-col ${c.reply_received?'has-value':''}">${c.reply_received?truncate(c.reply_received,55):'<span style="color:var(--line)">—</span>'}</td>
+      <td class="msg-col ${c.followup_sent?'has-value':''}">${c.followup_sent?truncate(c.followup_sent,55):'<span style="color:var(--line)">—</span>'}</td>
       <td>${statusPill(c.status)}</td>
       <td class="notes-col ${c.notes?'has-value':''}">${c.notes?truncate(c.notes,60):'<span style="color:var(--line)">—</span>'}</td>
       <td style="font-size:.76rem;color:var(--muted);">${esc(c.logged_by)||"—"}</td>
