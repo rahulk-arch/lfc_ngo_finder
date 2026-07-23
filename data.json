@@ -573,7 +573,9 @@
     "defunct": false,
     "defunct_reason": "",
     "defunct_date": "",
-    "excluded_urls": [],
+    "excluded_urls": [
+      "https://ngosindia.org/delhi-ngos/ability-unlimited-delhi/"
+    ],
     "verified_date": "2026-07-23",
     "verified_website": "https://www.agsamiti.org/",
     "verified_phones": [],
