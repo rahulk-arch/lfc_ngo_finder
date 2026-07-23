@@ -6,8 +6,9 @@
 <title>Delhi NGO Directory</title>
 <style>
 :root{
-  --paper:#F6F3EC;--ink:#1F2A24;--forest:#2C5F4A;--forest-dark:#1D4235;
-  --clay:#B4602C;--line:#D9D2C0;--card:#FFFFFF;--muted:#6B6F63;--panel-w:460px;
+  --paper:#FAF6E0;--ink:#5A5655;--forest:#AD4581;--forest-dark:#8A2F64;
+  --clay:#F89820;--line:#E8D8C0;--card:#FFFFFF;--muted:#9A9090;--panel-w:460px;
+  --pink:#E3225C;--yellow:#FDE020;--sky:#A4D8F5;--green:#82C290;
 }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:'Segoe UI',Helvetica,Arial,sans-serif;}
@@ -40,18 +41,18 @@ main{max-width:1100px;margin:1.2rem auto 3rem;padding:0 1.5rem;}
 .card h3{margin:0 0 .35rem;font-size:1.05rem;font-weight:800;color:var(--forest-dark);font-family:Georgia,serif;}
 .card .region-badge{display:inline-block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--clay);margin-bottom:.5rem;}
 .validation-badge{display:inline-block;font-size:.68rem;font-weight:700;padding:.15rem .55rem;border-radius:99px;margin-left:.5rem;vertical-align:middle;}
-.badge-green{background:#E4F3E9;color:#1D6B3A;}
-.badge-yellow{background:#FBF0D6;color:#8A6208;}
-.badge-red{background:#FBE4E1;color:#A02E22;}
-.badge-gray{background:#EBEAE4;color:#6B6F63;}
-.badge-verified{background:#D0EBE8;color:#0F5E56;}
+.badge-green{background:#D6EED9;color:#2D7A3A;}
+.badge-yellow{background:#FEF7C0;color:#8A6208;}
+.badge-red{background:#FAD0DC;color:#A01040;}
+.badge-gray{background:#EDE8E8;color:#5A5655;}
+.badge-verified{background:#D6EDFA;color:#1A6A9A;}
 .badge-defunct{background:#2A2A2A;color:#AAAAAA;}
-.badge-lfc{background:#E8E4F8;color:#4A2D9E;}
-.card .lfc-comment{font-size:.78rem;color:#4A2D9E;background:#F0EEF8;border-radius:4px;padding:.2rem .5rem;margin-top:.4rem;display:inline-block;}
+.badge-lfc{background:#F3D6E8;color:#AD4581;}
+.card .lfc-comment{font-size:.78rem;color:#AD4581;background:#F7E8F2;border-radius:4px;padding:.2rem .5rem;margin-top:.4rem;display:inline-block;}
 .card .row{font-size:.85rem;color:var(--ink);margin:.15rem 0;line-height:1.4;}
 .card .row.muted{color:var(--muted);}
 .card .tags{margin-top:.6rem;display:flex;flex-wrap:wrap;gap:.3rem;}
-.tag-pill{background:#EDF2EC;color:var(--forest-dark);font-size:.72rem;padding:.15rem .5rem;border-radius:99px;}
+.tag-pill{background:#DCF0FB;color:#1A6A9A;font-size:.72rem;padding:.15rem .5rem;border-radius:99px;}
 .card a{color:var(--forest);text-decoration:none;}
 .card a:hover{text-decoration:underline;}
 
@@ -82,7 +83,7 @@ main{max-width:1100px;margin:1.2rem auto 3rem;padding:0 1.5rem;}
 .panel-row a{color:var(--forest);text-decoration:none;}
 .panel-row a:hover{text-decoration:underline;}
 .panel-mission{font-size:.85rem;color:var(--ink);line-height:1.6;background:var(--paper);border-radius:6px;padding:.8rem 1rem;}
-.verified-banner{background:#D0EBE8;border-radius:6px;padding:.5rem .8rem;font-size:.82rem;color:#0F5E56;}
+.verified-banner{background:#D6EDFA;border-radius:6px;padding:.5rem .8rem;font-size:.82rem;color:#1A6A9A;}
 
 /* ── 4 permanent action buttons ── */
 .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;padding:0 1.4rem 1.2rem;}
@@ -92,10 +93,10 @@ main{max-width:1100px;margin:1.2rem auto 3rem;padding:0 1.5rem;}
 
 /* ── search status ── */
 #searchStatus{margin:0 1.4rem .9rem;padding:.7rem 1rem;border-radius:6px;font-size:.84rem;display:none;}
-#searchStatus.searching{display:block;background:#EDF2EC;color:var(--forest-dark);}
-#searchStatus.found{display:block;background:#E4F3E9;color:#1D6B3A;}
-#searchStatus.not-found{display:block;background:#EBEAE4;color:#6B6F63;}
-#searchStatus.error{display:block;background:#FBE4E1;color:#A02E22;}
+#searchStatus.searching{display:block;background:#F3D6E8;color:var(--forest-dark);}
+#searchStatus.found{display:block;background:#D6EED9;color:#2D7A3A;}
+#searchStatus.not-found{display:block;background:#EDE8E8;color:#5A5655;}
+#searchStatus.error{display:block;background:#FAD0DC;color:#A01040;}
 
 /* ── fresh data ── */
 #freshSection{display:none;padding:0 1.4rem 1rem;}
@@ -113,8 +114,8 @@ main{max-width:1100px;margin:1.2rem auto 3rem;padding:0 1.5rem;}
 .btn{padding:.55rem .9rem;border-radius:6px;border:none;cursor:pointer;font-size:.85rem;font-weight:600;transition:background .12s;}
 .btn:disabled{opacity:.5;cursor:not-allowed;}
 .btn-yes{background:var(--forest);color:#fff;}    .btn-yes:hover:not(:disabled){background:var(--forest-dark);}
-.btn-no{background:#FBE4E1;color:#A02E22;}         .btn-no:hover:not(:disabled){background:#f5cdc8;}
-.btn-secondary{background:var(--line);color:var(--ink);} .btn-secondary:hover:not(:disabled){background:#C8C0AD;}
+.btn-no{background:#FAD0DC;color:#A01040;}         .btn-no:hover:not(:disabled){background:#F5B8C8;}
+.btn-secondary{background:var(--line);color:var(--ink);} .btn-secondary:hover:not(:disabled){background:#D8C8A8;}
 
 /* ── manual / url form ── */
 .sub-section{display:none;padding:0 1.4rem 1.4rem;}
@@ -207,10 +208,11 @@ main{max-width:1100px;margin:1.2rem auto 3rem;padding:0 1.5rem;}
     <!-- LFC section -->
     <div class="panel-section" id="lfcSection">
       <div class="panel-section-title">LFC Relation</div>
-      <div id="lfcCurrentComment" style="display:none;font-size:.82rem;color:#4A2D9E;background:#F0EEF8;border-radius:5px;padding:.4rem .7rem;margin-bottom:.6rem;"></div>
+      <div id="lfcCurrentComment" style="display:none;font-size:.82rem;color:#AD4581;background:#F7E8F2;border-radius:5px;padding:.4rem .7rem;margin-bottom:.6rem;"></div>
       <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem;">
         <label style="display:flex;align-items:center;gap:.4rem;font-size:.85rem;cursor:pointer;">
           <input type="checkbox" id="lfcRelated" style="width:15px;height:15px;accent-color:var(--forest);">
+
           Mark as related to LFC's work
         </label>
       </div>
@@ -236,20 +238,20 @@ main{max-width:1100px;margin:1.2rem auto 3rem;padding:0 1.5rem;}
     <button class="action-btn" id="aBtnManual">✏️ Enter manually</button>
     <button class="action-btn" id="aBtnUrl">🌐 Paste website URL</button>
     <button class="action-btn" id="aBtnReset">↺ Reset / clear</button>
-    <button class="action-btn" id="aBtnCollab" style="grid-column:1/-1;background:#FBF0D6;border-color:#E8C84A;color:#5C3D00;">🤝 Log collaboration with this NGO</button>
-    <button class="action-btn" id="aBtnDefunct" style="grid-column:1/-1;background:#F0F0F0;border-color:#AAAAAA;color:#555;">🚫 Mark as defunct / no longer exists</button>
+    <button class="action-btn" id="aBtnCollab" style="grid-column:1/-1;background:#FEF7C0;border-color:#FDE020;color:#6B4A00;">🤝 Log collaboration with this NGO</button>
+    <button class="action-btn" id="aBtnDefunct" style="grid-column:1/-1;background:#EDE8E8;border-color:#C8B8B8;color:#5A5655;">🚫 Mark as defunct / no longer exists</button>
   </div>
 
   <!-- defunct confirm box (shown inline) -->
-  <div id="defunctBox" style="display:none;margin:0 1.4rem 1rem;background:#F5F5F5;border:1.5px solid #CCC;border-radius:8px;padding:1rem;">
-    <div style="font-size:.88rem;font-weight:700;color:#333;margin-bottom:.4rem;">⚠️ Mark as defunct?</div>
-    <div style="font-size:.82rem;color:#666;margin-bottom:.8rem;">This will flag the NGO as no longer active. It will still appear in the directory but be clearly marked. You can undo this later.</div>
+  <div id="defunctBox" style="display:none;margin:0 1.4rem 1rem;background:#FAF6E0;border:1.5px solid #E8D8C0;border-radius:8px;padding:1rem;">
+    <div style="font-size:.88rem;font-weight:700;color:#5A5655;margin-bottom:.4rem;">⚠️ Mark as defunct?</div>
+    <div style="font-size:.82rem;color:#9A9090;margin-bottom:.8rem;">This will flag the NGO as no longer active. It will still appear in the directory but be clearly marked. You can undo this later.</div>
     <div class="form-field" style="margin-bottom:.6rem;">
-      <label style="font-size:.78rem;color:#666;">Reason (optional)</label>
-      <input type="text" id="defunctReason" placeholder="e.g. Website down, no response since 2023…" style="width:100%;padding:.45rem .7rem;border:1.5px solid #CCC;border-radius:5px;font-size:.85rem;">
+      <label style="font-size:.78rem;color:#9A9090;">Reason (optional)</label>
+      <input type="text" id="defunctReason" placeholder="e.g. Website down, no response since 2023…" style="width:100%;padding:.45rem .7rem;border:1.5px solid #E8D8C0;border-radius:5px;font-size:.85rem;">
     </div>
     <div style="display:flex;gap:.6rem;">
-      <button class="btn btn-sm" id="btnDefunctConfirm" style="background:#333;color:#fff;border:none;">Yes, mark defunct</button>
+      <button class="btn btn-sm" id="btnDefunctConfirm" style="background:#5A5655;color:#fff;border:none;">Yes, mark defunct</button>
       <button class="btn btn-secondary btn-sm" id="btnDefunctCancel">Cancel</button>
     </div>
   </div>
@@ -379,7 +381,7 @@ const PLATFORMS = [
   {key:"x.com",   label:"Twitter/X", color:"#000",
     icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>'},
 ];
-function getSocialMeta(url){try{const h=new URL(url).hostname.replace("www.","");return PLATFORMS.find(p=>h.includes(p.key))||{label:h,color:"#6B6F63",icon:"🔗"};}catch{return{label:"Link",color:"#6B6F63",icon:"🔗"};}}
+function getSocialMeta(url){try{const h=new URL(url).hostname.replace("www.","");return PLATFORMS.find(p=>h.includes(p.key))||{label:h,color:"#5A5655",icon:"🔗"};}catch{return{label:"Link",color:"#5A5655",icon:"🔗"};}}
 function renderSocialPills(urls){return(urls||[]).map(u=>{const p=getSocialMeta(u);return`<a href="${esc(u)}" target="_blank" rel="noopener" class="social-pill" style="color:${p.color};border-color:${p.color}33;">${p.icon}<span>${p.label}</span></a>`;}).join("");}
 
 // ── state ─────────────────────────────────────────────────────────────────────
@@ -432,7 +434,7 @@ async function loadData(){
     $("loadingOverlay").style.display="none";
     $("totalCount").textContent=DATA.length+" organizations";
     render();
-  }catch(e){$("loadingOverlay").innerHTML='<div style="color:#A02E22;text-align:center;padding:2rem;">Could not load data.json</div>';}
+  }catch(e){$("loadingOverlay").innerHTML='<div style="color:#A01040;text-align:center;padding:2rem;">Could not load data.json</div>';}
 }
 
 function esc(str){const d=document.createElement("div");d.textContent=str||"";return d.innerHTML;}
@@ -900,7 +902,7 @@ $("btnSaveLfc").addEventListener("click", async()=>{
   const comment=$("lfcComment").value.trim();
   if(!comment){
     showToast("Please enter a comment before saving.");
-    $("lfcComment").style.borderColor="var(--clay)";
+    $("lfcComment").style.borderColor="var(--pink)";
     setTimeout(()=>$("lfcComment").style.borderColor="var(--line)",2000);
     return;
   }
