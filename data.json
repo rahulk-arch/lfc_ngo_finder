@@ -560,20 +560,31 @@
     "address": "D-168, 43, Patpar Ganj Delhi Pin: 110092 Delhi",
     "region": "East Delhi",
     "phone": "",
-    "mobile": "91-98113 40308",
-    "email": "abilityunlimited@gmail.com",
-    "website": "http://www.abilityunlimited.com",
+    "mobile": "",
+    "email": "",
+    "website": "",
     "contact": "Guru Syed Sallauddin Pasha",
     "tags": [
       "Vocational Training And Proejcts For Disabled"
     ],
     "badge_label": "Website verified",
-    "badge_class": "badge-green",
-    "verified": false,
+    "badge_class": "badge-verified",
+    "verified": true,
     "defunct": false,
     "defunct_reason": "",
     "defunct_date": "",
-    "excluded_urls": []
+    "excluded_urls": [],
+    "verified_date": "2026-07-23",
+    "verified_website": "https://www.agsamiti.org/",
+    "verified_phones": [],
+    "verified_emails": [],
+    "verified_addresses": [],
+    "verified_socials": [
+      "https://www.facebook.com/adi.samiti"
+    ],
+    "verified_phone": "",
+    "verified_email": "",
+    "verified_address": ""
   },
   {
     "name": "ABVSPS – Akhil Bhartiya Vedic Shikshan Avam Parshikshan Sansthan, Delhi",
