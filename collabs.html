@@ -238,7 +238,7 @@ td.notes-col.has-value{color:var(--ink);}
         <textarea id="fNotes" placeholder="Anything useful for next time…"></textarea>
       </div>
       <div class="form-field">
-        <label>Logged by</label>
+        <label>Logged by <span class="req">*</span></label>
         <input type="text" id="fLoggedBy" placeholder="Your name">
       </div>
       <div style="display:flex;gap:.6rem;margin-top:.8rem;">
@@ -386,6 +386,7 @@ $("btnSubmitLog").addEventListener("click", async() => {
   if(!ngo_name){showToast("NGO name is required.");return;}
   if(!date){showToast("Date is required.");return;}
   if(!topic){showToast("Topic is required.");return;}
+  if(!$("fLoggedBy").value.trim()){showToast("Please enter your name in 'Logged by'.");$("fLoggedBy").focus();return;}
   const btn=$("btnSubmitLog"); btn.textContent="Saving…"; btn.disabled=true;
   const payload={ngo_name,date,topic,
     message_sent:$("fMsgSent").value.trim(),reply_received:$("fReply").value.trim(),
