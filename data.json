@@ -811,7 +811,9 @@
     "defunct": false,
     "defunct_reason": "",
     "defunct_date": "",
-    "excluded_urls": []
+    "excluded_urls": [
+      "https://mitr.co.in/ngos/adi-gram-samiti-new-delhi"
+    ]
   },
   {
     "name": "Aditi Foundation, New Delhi",
