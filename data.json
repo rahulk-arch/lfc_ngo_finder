@@ -818,24 +818,35 @@
     "url": "https://ngosindia.org/delhi-ngos/adi-gram-samiti-new-delhi/",
     "address": "B-1/1106 A, Vasant Kunj New Delhi Pin: 110070 Delhi",
     "region": "South West Delhi",
-    "phone": "91-11-26133994",
-    "mobile": "91-98111 71752",
-    "email": "agsamiti@vsnl.net",
-    "website": "http://www.agsamiti.org",
+    "phone": "",
+    "mobile": "",
+    "email": "",
+    "website": "",
     "contact": "Vinod Kumar Kanathia",
     "tags": [
       "Collaboration"
     ],
     "badge_label": "Website verified",
-    "badge_class": "badge-green",
-    "verified": false,
+    "badge_class": "badge-verified",
+    "verified": true,
     "defunct": false,
     "defunct_reason": "",
     "defunct_date": "",
     "excluded_urls": [
       "https://mitr.co.in/ngos/adi-gram-samiti-new-delhi",
       "https://ngosindia.org/delhi-ngos/adi-gram-samiti-new-delhi/"
-    ]
+    ],
+    "verified_date": "2026-07-23",
+    "verified_website": "https://www.agsamiti.org/",
+    "verified_phones": [],
+    "verified_emails": [],
+    "verified_addresses": [],
+    "verified_socials": [
+      "https://www.facebook.com/adi.samiti"
+    ],
+    "verified_phone": "",
+    "verified_email": "",
+    "verified_address": ""
   },
   {
     "name": "Aditi Foundation, New Delhi",
